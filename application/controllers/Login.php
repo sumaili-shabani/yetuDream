@@ -7,7 +7,7 @@ class login extends CI_Controller
 	{
 	  parent::__construct();
 	  $this->load->library('form_validation');
-	  $this->load->library('encrypt');
+	  $this->load->library('encryption');
 	  $this->load->model('crud_model'); 
 	}
 

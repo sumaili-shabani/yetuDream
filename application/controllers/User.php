@@ -14,8 +14,8 @@ class user extends CI_Controller
 		  //     	redirect(base_url().'login');
 		  // }
 		  $this->load->library('form_validation');
-		  $this->load->library('encrypt');
-	      $this->load->library('pdf');
+		  $this->load->library('encryption');
+	      // $this->load->library('pdf');
 		  $this->load->model('crud_model'); 
 
 		  $this->load->helper('url');
