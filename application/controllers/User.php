@@ -61,7 +61,7 @@ class user extends CI_Controller
 	}
 
 	public function recent_lot(){
-		$data["title"] = "Shop de notre boutique"; 
+		$data["title"] = "Recent lot de notre boutique"; 
 		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
 		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
 		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_connected($this->connected); 

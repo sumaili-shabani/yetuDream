@@ -2,6 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');  
 class login extends CI_Controller
 {
+	private $token;
+	private $connected;
+	protected $numeros_sites;
 
 	public function __construct()
 	{
@@ -9,25 +12,45 @@ class login extends CI_Controller
 	  $this->load->library('form_validation');
 	  $this->load->library('encryption');
 	  $this->load->model('crud_model'); 
+
+	  $this->connected = $this->session->userdata('id');
+	  $this->numeros_sites = $this->crud_model->get_telephone_du_site();
 	}
 
 
 	public function index(){
 		$data["title"] = "Connexion au système Gestion galerie nord kivu";  
-		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site(); 
-		$this->load->view('login', $data);
-		// $this->load->view('panel', $data);
+		// $data['contact_info_site']  = $this->crud_model->Select_contact_info_site(); 
+		// $this->load->view('login', $data);
+
+		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_home(); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		$this->load->view('frontend/login', $data);
+		
 	}
 	public function register(){
 		$data["title"] = "Devenez de à présent membre au système "; 
-		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();  
-		$this->load->view('register', $data);
+		
+		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_home(); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		$this->load->view('frontend/register', $data);
 	}
 	public function forgot(){
 		$data["title"] = "Avez-vous oublié votre mot de passe au 
 		système Gestion galerie nord kivu professionnel";  
-		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site(); 
-		$this->load->view('forgot', $data);
+		
+		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_home(); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		$this->load->view('frontend/forgot', $data);
 	}
 	public function accueil(){
 		echo("bonjour dans le codeigner");
@@ -124,9 +147,7 @@ class login extends CI_Controller
 	}
 
 	function panel(){
-		$data['title']="mon profile";
-		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site(); 
-		$this->load->view('backend/apprenant/panel', $data);
+		redirect('login','refresh');
 
 	}
 
@@ -242,9 +263,14 @@ class login extends CI_Controller
 	}
 
 	function recupere_secure(){
-		$data["title"] = "Récupération mot de passe"; 
-		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();  
-		$this->load->view('forgot', $data);
+		$data["title"] = "Récupération mot de passe";
+
+		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_home(); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		$this->load->view('frontend/forgot', $data);
 	}
 
 	
@@ -252,7 +278,7 @@ class login extends CI_Controller
     function change_secure($param1='', $param2='',$param3='')
     {
         $data['title'] = "recupération de mot de passe";
-        $data['contact_info_site']  = $this->crud_model->Select_contact_info_site(); 
+
         $data['verification_key'] = $param1;
         $req = $this->db->where('verification_key', $param1);
         $req = $this->db->get('recupere');
@@ -265,7 +291,12 @@ class login extends CI_Controller
 
         }
 
-        $this->load->view('secure', $data);
+        $data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_home(); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		$this->load->view('frontend/secure', $data);
     }
 
 
@@ -319,6 +350,45 @@ class login extends CI_Controller
    
     function recuperaion_password(){
 
+    	$contact_info_site  = $this->crud_model->Select_contact_info_site(); 
+    	$icone_info;
+		$tel1_info;
+		$tel2_info ;
+		$adresse_info ;
+		$facebook_info ;
+		$twitter_info;
+		$linkedin_info;
+		$email_info ;
+		$termes_info;
+		$confidentialite_info ;
+		$description_info;
+		$mission_info;
+		$objectif_info;
+		$blog_info;
+		$nom_site_info;
+
+		if ($contact_info_site->num_rows() > 0) {
+		  foreach ($contact_info_site->result_array() as $key) {
+		    $nom_site_info = $key['nom_site'];
+		    $icone_info = base_url().'upload/tbl_info/'.$key['icone'];
+		    $tel1_info = $key['tel1'];
+		    $tel2_info = $key['tel2'];
+		    $adresse_info = $key['adresse'];
+		    $facebook_info = $key['facebook'];
+		    $twitter_info = $key['twitter'];
+		    $linkedin_info = $key['linkedin'];
+		    $email_info = $key['email'];
+		    $termes_info = $key['termes'];
+		    $confidentialite_info = $key['confidentialite'];
+		    $description_info = $key['description'];
+		    $mission_info = $key['mission'];
+		    $objectif_info = $key['objectif'];
+		    $blog_info = $key['blog'];
+
+		  }
+
+		}
+
         $this->form_validation->set_rules('user_email', 'Email Address', 'required|trim|valid_email');
         if($this->form_validation->run())
         {
@@ -328,12 +398,12 @@ class login extends CI_Controller
                 $code=str_shuffle(substr("1f-èh_çà234567890+6@-?[K89ZTY\J0-T9*h#+/@THSBJ98461700221VPEHI?S&8!}\|", 0,10));
                 $verification_key = md5(rand());
                 $mail    = $this->input->post('user_email');
-                $website = "info@congoback.com";
+                $website = $email_info;
 
                 $to =$this->input->post('user_email');
                 $subject = "votre mot de passe de recupération au compte system Ets yetu";
                 $message2 = "
-                <p>Salut!!! voici votre code de recupération de votre mot de passe au système de Ets yetu  ".$verification_key." cliquer sur ce lien pour changer votre nouveau mot de passe <a href='".base_url()."login/change_secure/".$verification_key."'>changer mon mot de passe</a>.</p>
+                <p>Salut!!! voici votre code de recupération de votre mot de passe au système de ".$nom_site_info."   ".$verification_key." cliquer sur ce lien pour changer votre nouveau mot de passe <a href='".base_url()."login/change_secure/".$verification_key."'>changer mon mot de passe</a>.</p>
                
                 ";
 
@@ -342,6 +412,8 @@ class login extends CI_Controller
                 $headers .= "From: no-reply@congoback.com" . "\r\n" ."Reply-to: sumailiroger681@gmail.com"."\r\n"."X-Mailer: PHP/".phpversion();
 
                 mail($to,$subject,$message2,$headers);
+
+                
 
                 if(mail($to,$subject,$message2,$headers) > 0){
 

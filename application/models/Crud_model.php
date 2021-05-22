@@ -221,6 +221,23 @@ class crud_model extends CI_Model{
       return $nombreTotal;
   }
 
+  // nombre des produits au panier home 
+  function fetch_number_Panier_home(){
+      $nombreTotal;
+      $query= $this->db->query("SELECT COUNT(product_id) AS nombre FROM cart2  ");
+      if ($query->num_rows() > 0) {
+        foreach ($query->result_array() as $key) {
+          # code...
+          $nombreTotal = $key['nombre'];
+        }
+
+      }
+      else{
+        $nombreTotal = 0;
+      }
+      return $nombreTotal;
+  }
+
  
 
   function get_info_user(){
@@ -574,12 +591,21 @@ class crud_model extends CI_Model{
     function fetch_single_rand_pro_one()  
     {  
          $img='';
+         $link='';
+         if($this->session->userdata('id'))
+         {
+               $link='user';
+         }
+         else{
+               $link='home';
+         }
+
          $query = $this->db->query("SELECT * FROM profile_product ORDER BY RAND() LIMIT 1"); 
           if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
               $img ='
                 <a class="category-item mb-4" 
-                   href="'.base_url().'user/detailProduct/'.$row->product_id.'">
+                   href="'.base_url().$link.'/detailProduct/'.$row->product_id.'">
                    <img class="img-fluid" src="'.base_url().'upload/product/'.$row->product_image.'" alt=""><strong class="category-item-title">'.$row->nom.'</strong>
                 </a>
 
@@ -2009,9 +2035,21 @@ class crud_model extends CI_Model{
       $this->db->insert('favories', $data);
     } 
 
+    // ajouter au favorie home
+    function insert_to_favories2($data)
+    {
+      $this->db->insert('favories2', $data);
+    } 
+
     function verification_favory($id_user, $product_id){
       return $this->db->get_where('favories', array(
         'id_user'     =>  $id_user,
+        'product_id'  =>  $product_id  
+      ));
+    }
+    // test pour panier home favory
+    function verification_favory2($product_id){
+      return $this->db->get_where('favories2', array(
         'product_id'  =>  $product_id  
       ));
     }
@@ -2077,11 +2115,25 @@ class crud_model extends CI_Model{
       $this->db->insert('cart', $data);
     } 
 
+    // ajouter au panier home
+    function insert_to_cart_home($data)
+    {
+      $this->db->insert('cart2', $data);
+    } 
+
     // suppression panier
     function suppression_produit_cart($idc){
       $this->db->where("idc", $idc);
       $this->db->delete("cart");
     }
+
+    // suppression panier
+    function suppression_produit_cart_home($idc){
+      $this->db->where("idc", $idc);
+      $this->db->delete("cart2");
+    }
+
+
     // insertion padding vente 
     function insert_pading_vente($data){
       $this->db->insert('pading_vente', $data);
@@ -2095,14 +2147,36 @@ class crud_model extends CI_Model{
         return $user;
     }
 
-    // vider panier 
-    function vide_suppression_produit_cart($user_id){
-      $this->db->where("user_id", $user_id);
-      $this->db->delete("cart");
+    // vider panier home
+    function vide_suppression_produit_cart_home(){
+      $this->db->query("DELETE FROM cart2");
+    }
+
+    // vider favory home
+    function vide_suppression_favory_home(){
+      $this->db->query("DELETE FROM favories2 ");
     }
     // solde net à payer
     function calcul_net_apayer($user_id){
         $query = $this->db->query("SELECT SUM(product_priceTotal) AS total_a_payer FROM cart WHERE user_id= '".$user_id."'");
+        $montant;
+        if ($query->num_rows() > 0) {
+          foreach ($query->result_array() as $key) {
+            $montant = $key['total_a_payer'];
+          }
+        }
+        else{
+
+          $montant = 0;
+        }
+
+        return $montant;
+
+    }
+
+    // solde net à payer home
+    function calcul_net_apayer_home(){
+        $query = $this->db->query("SELECT SUM(product_priceTotal) AS total_a_payer FROM cart2 ");
         $montant;
         if ($query->num_rows() > 0) {
           foreach ($query->result_array() as $key) {
@@ -2143,6 +2217,13 @@ class crud_model extends CI_Model{
       $query = $this->db->get_where("cart",array(
         'user_id' =>  $user_id
       ));
+      return $query;
+    }
+
+     // detail des produits home
+    function detail_cart_home(){
+      $this->db->order_by("idc","DESC");
+      $query = $this->db->get("cart2");
       return $query;
     }
 
