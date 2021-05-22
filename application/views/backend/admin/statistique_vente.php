@@ -93,7 +93,8 @@
    <?php include('_script.php') ?>
 
    <!-- google chart to load.js -->
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
+  <script src="<?= base_url('js/chart/loader.js')?>"></script>
 	<script src="<?= base_url('js/chart/morris.min.js')?>"></script>
 	<script src="<?= base_url('js/chart/raphael-min.js')?>"></script>
 	<script src="<?= base_url('js/chart/load.js')?>"></script>
@@ -124,7 +125,7 @@
 		{
 		    var jsonData = chart_data;
 		    var data = new google.visualization.DataTable();
-		    data.addColumn('string', 'Month');
+		    data.addColumn('string', 'Mois');
 		    data.addColumn('number', 'Profit');
 
 		    $.each(jsonData, function(i, jsonData){
@@ -136,7 +137,7 @@
 		    var options = {
 		        title:chart_main_title,
 		        hAxis: {
-		            title: "Months"
+		            title: "Mois"
 		        },
 		        vAxis: {
 		            title: 'Profit'
@@ -153,9 +154,24 @@
 		    var year = $(this).val();
 		    if(year != '')
 		    {
-		        load_monthwise_data(year, 'Month Wise Profit Data For');
+		        load_monthwise_data(year, 'Le profit et vente par mois');
 		    }
+        else{
+          var annee = new Date();
+          var year = annee.getFullYear();
+          load_monthwise_data(year, 'Le profit et vente par mois');
+
+        }
 		});
+
+    function chargement(){
+      var annee = new Date();
+      var year = annee.getFullYear();
+      load_monthwise_data(year, 'Le profit et vente par mois');
+    }
+    chargement();
+
+
 
 		
 

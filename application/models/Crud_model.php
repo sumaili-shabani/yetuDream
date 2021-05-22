@@ -316,6 +316,23 @@ class crud_model extends CI_Model{
       return $my_nombre;
   }
 
+  function statistiques_nombre_valider($query){
+      $my_nombre;
+      $data_ok = $this->db->query("SELECT count(*) AS nombre from ".$query." WHERE etat_paiement=1 ");
+      if ($data_ok->num_rows() > 0) {
+
+        foreach ($data_ok->result_array() as $key) {
+          $my_nombre = $key['nombre'];
+        }
+        # code...
+      }
+      else{
+           $my_nombre = 0;
+      }
+
+      return $my_nombre;
+  }
+
   function statistiques_nombre_where($query, $colone,$value){
       $my_nombre;
       $data_ok = $this->db->query("SELECT count(*) AS nombre from ".$query." WHERE ".$colone."='".$value."' ");
@@ -2702,7 +2719,7 @@ class crud_model extends CI_Model{
   // retour de nom de jours
   function get_info_mois(){
       $journee='';
-      $nom = $this->db->query("SELECT MONTH(now()) AS jour");
+      $nom = $this->db->query("SELECT MONTHNAME(now()) AS jour");
       foreach ($nom->result_array() as $key) {
         $journee=$key['jour'];
       }

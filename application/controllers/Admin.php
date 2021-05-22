@@ -42,9 +42,9 @@ class admin extends CI_Controller
 
 		      $data['nombre_membre'] = $this->crud_model->statistiques_nombre_tag_by_column("users", 3);
 
-		      $data['nombre_paiement'] = $this->crud_model->statistiques_nombre("paiement");
+		      $data['nombre_paiement'] = $this->crud_model->statistiques_nombre_valider("paiement");
 
-		      $data['nombre_users'] = $this->crud_model->statistiques_nombre("users");
+		      $data['nombre_users'] = $this->crud_model->statistiques_nombre("product");
 		      $this->load->view('backend/admin/dashbord', $data);
 		}
 

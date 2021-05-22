@@ -54,7 +54,7 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nombre des membres
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nombre de boutiquiers
                                 </div>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-auto">
@@ -70,7 +70,7 @@
                             <div class="col-auto">
                                 <a href="<?php echo(base_url()) ?>admin/users">
                                     
-                                    <i class="fas fa-university fa-2x text-gray-300"></i>
+                                    <i class="fas fa-users fa-2x text-gray-300"></i>
                                 </a>
                                 
                             </div>
@@ -86,13 +86,13 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Nombre D'utilisateurs </div>
+                                    Nombre de produits </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo($nombre_users); ?></div>
                             </div>
                             <div class="col-auto">
                                 <a href="<?php echo(base_url()) ?>admin/users">
                                     
-                                    <i class="fas fa-group fa-2x text-gray-300"></i>
+                                    <i class="fas fa-info fa-2x text-gray-300"></i>
                                 </a>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
 						$chart_data2 = '';
 						$chart_data3 = '';
 
-						$detail2 = $this->db->query("SELECT COUNT(motif) AS nombre, motif,(SELECT SUM(montant)) as total,date_paie FROM profile_paiement GROUP BY date_paie");
+						$detail2 = $this->db->query("SELECT COUNT(motif) AS nombre, motif,(SELECT SUM(montant)) as total,date_paie FROM profile_paiement WHERE etat_paiement=1 GROUP BY date_paie");
 						if ($detail2->num_rows() > 0) {
 						    foreach ($detail2->result_array() as $key) {
 
