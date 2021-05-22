@@ -15,7 +15,7 @@ class admin extends CI_Controller
 		  }
 		  $this->load->library('form_validation');
 		  $this->load->library('encryption');
-	      $this->load->library('pdf');
+	      // $this->load->library('pdf');
 		  $this->load->model('crud_model'); 
 
 		  $this->load->helper('url');
@@ -94,6 +94,7 @@ class admin extends CI_Controller
 	       $html_content = '';
 	       $html_content .= $this->crud_model->Fiche_impressionStockEntrant();
 
+	       // $this->load->library('pdf');
 	       // echo($html_content);
 	       $this->pdf->loadHtml($html_content);
 	       $this->pdf->render();
@@ -320,6 +321,107 @@ class admin extends CI_Controller
 		}
 
 		/*
+
+	    DEBIT FONCTION APPEL DES VIEWS UTILISATION DE PORTALI Ecommerce
+	    MES SCRIPTS EcommerceB COMMENCE DEJE
+	    ========================================================
+	    */
+
+	    function paiement_pading($param1=''){
+	    	$data['title']="Les transactions de paiement!";
+	    	$data['token']= $param1;
+	    	$data['users'] = $this->crud_model->fetch_connected($this->connected);
+		    $data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+	    	$data['mes_ventes'] = $this->crud_model->fetch_connected_vente_all(); 
+		    $this->load->view('backend/admin/achat', $data);
+
+	    }
+
+	    function compte($param1=''){
+	    	$data['title']="Liste de nos paiements et vente!";
+	    	$data['token']= $param1;
+	    	$data['users'] = $this->crud_model->fetch_connected($this->connected);
+		    $data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+	    	$data['mes_ventes'] = $this->crud_model->fetch_connected_vente_all(); 
+		    $this->load->view('backend/admin/compte', $data);
+
+	    }
+
+	    function stat_paiement(){
+	    	$data['title']="Statistique sur paiements et vente!";
+	    	$data['users'] = $this->crud_model->fetch_connected($this->connected);
+		    $data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+	    	$data['mes_ventes'] = $this->crud_model->fetch_connected_vente_all(); 
+	    	$data['year_list'] = $this->crud_model->fetch_year();
+		    $this->load->view('backend/admin/statistique_vente', $data);
+	    }
+
+	    function facturePaiement($code=''){
+	       $customer_id = "paiement facture n° ".$code;
+	       $idpersonne = $this->crud_model->fetch_clicent_Panier_tag($code);
+	       // operation d'envois des notification 
+
+	       $dataUpdate = array(
+	        'etat_paiement' =>  1
+	       );
+
+	       $cool = $this->crud_model->update_paiement_etat($code, $dataUpdate);
+	       if (!$cool) {
+
+	       		$url    ="user/facturePaiement/". $code;
+                $nom    = $this->crud_model->get_name_user($idpersonne);
+
+                // $nom = $this->input->post('titre');
+                $message ="Bonjour ".$nom." votre paiement a été validé avec succès 👌";
+
+                $notification = array(
+                  'titre'     =>    "Félicitation d'avance!!!",
+                  'icone'     =>    "fa fa-check",
+                  'message'   =>     $message,
+                  'url'       =>     $url,
+                  'id_user'   =>     $idpersonne
+                );
+                
+                $not = $this->crud_model->insert_notification($notification);
+
+                $dataUpdate = array(
+                	'etat_vente'	=> 1
+                );
+                $this->crud_model->updated_padding_vente($code, $dataUpdate);
+	       	
+	       }
+	       // fin envois 
+	       $html_content = '';
+	       $html_content .= $this->crud_model->fetch_single_details_facture($idpersonne, $code);
+	       echo($html_content);
+	       // $this->pdf->loadHtml($html_content);
+	       // $this->pdf->render();
+	       // $this->pdf->stream("paiement reçu_".$customer_id.".pdf", array("Attachment"=>0));
+	    }
+
+	    function fetch_data()
+		{
+		  if($this->input->post('year'))
+		  {
+		   $chart_data = $this->crud_model->fetch_chart_data($this->input->post('year'));
+		   
+		   foreach($chart_data->result_array() as $row)
+		   {
+		    $output[] = array(
+			     'month'  => $row["month"],
+			     'profit' => floatval($row["montant"])
+		    );
+		   }
+		   echo json_encode($output);
+		  }
+		}
+
+
+
+
+
+
+	    /*
 
 	    DEBIT FONCTION APPEL DES VIEWS UTILISATION DE PORTALI Ecommerce
 	    MES SCRIPTS EcommerceB COMMENCE DEJE
@@ -1762,6 +1864,77 @@ class admin extends CI_Controller
     
   }
 
+    function supression_transaction()
+	{
+
+	      $this->crud_model->delete_transaction($this->input->post("code"));
+
+	      echo("suppression avec succès");
+	    
+	}
+
+    function multiple_supression_transaction()
+    {
+        if($this->input->post('checkbox_value'))
+        {
+           $id = $this->input->post('checkbox_value');
+           for($count = 0; $count < count($id); $count++)
+           {
+                $code    = $id[$count];
+                $query = $this->crud_model->delete_transaction($code);
+           }
+
+           if(!$query){
+                echo("Suppression avec succès");
+           } 
+           else {
+                echo("échec lors de la suppression !!!!!!!!!!!!");
+           }
+
+
+        }
+    }
+
+    function suppression_tag_transaction()
+    {
+    	$code = $this->input->post('code');
+    	$idpersonne = $this->crud_model->fetch_clicent_Panier_tag($code);
+    	$query = $this->crud_model->delete_transaction_paiement($code);
+    	if(!$query){
+
+            echo("Suppression avec succès");
+            $url    ="user/achat";
+            $nom    = $this->crud_model->get_name_user($idpersonne);
+
+            $delete = $this->crud_model->ondelete_notifacation($idpersonne, $url);
+            if (!$delete) {
+
+            	$message ="Bonjour ".$nom." votre paiement a été invalidé pour une raison valable. pour plus d'information contacter l'administration pour une explication valable";
+	            $notification = array(
+	              'titre'     =>    "Désolé  ".$nom,
+	              'icone'     =>    "fa fa-check",
+	              'message'   =>     $message,
+	              'url'       =>     $url,
+	              'id_user'   =>     $idpersonne
+	            );
+	            
+	            $not = $this->crud_model->insert_notification($notification);
+			    $dataUpdate = array(
+	            	'etat_vente'	=> 0
+	            );
+	            $this->crud_model->updated_padding_vente($code, $dataUpdate);
+
+            }
+
+            echo("suppression avec succès!!!");
+
+        } 
+        else{
+            echo("échec lors de la suppression !!!");
+        }
+
+    }
+
     function infomation_par_mail()
     {
         if($this->input->post('checkbox_value'))
@@ -1797,6 +1970,503 @@ class admin extends CI_Controller
         }
     }
      // fin contact
+
+    /*
+    les scripts pour confirmation de paiement
+    ========================================
+    =======================================
+    =======================================
+    */
+
+
+    // script pour les paiements
+
+		function pagination_view_paiements_padding()
+		{
+
+		  $this->load->library("pagination");
+		  $config = array();
+		  $config["base_url"] = "#";
+		  $config["total_rows"] = $this->crud_model->count_all_view_paiement_padding();
+		  $config["per_page"] = 5;
+		  $config["uri_segment"] = 3;
+		  $config["use_page_numbers"] = TRUE;
+		  $config["full_tag_open"] = '<ul class="nav pagination">';
+		  $config["full_tag_close"] = '</ul>';
+		  $config["first_tag_open"] = '<li class="page-item">';
+		  $config["first_tag_close"] = '</li>';
+		  $config["last_tag_open"] = '<li class="page-item">';
+		  $config["last_tag_close"] = '</li>';
+		  $config['next_link'] = '<li class="page-item active"><i class="btn btn-info">&gt;&gt;</i>';
+		  $config["next_tag_open"] = '<li class="page-item">';
+		  $config["next_tag_close"] = '</li>';
+		  $config["prev_link"] = '<li class="page-item active"><i class="btn btn-info">&lt;&lt;</i>';
+		  $config["prev_tag_open"] = "<li class='page-item'>";
+		  $config["prev_tag_close"] = "</li>";
+		  $config["cur_tag_open"] = "<li class='page-item active'><a href='#' class='page-link'>";
+		  $config["cur_tag_close"] = "</a></li>";
+		  $config["num_tag_open"] = "<li class='page-item'>";
+		  $config["num_tag_close"] = "</li>";
+		  $config["num_links"] = 1;
+		  $this->pagination->initialize($config);
+		  $page = $this->uri->segment(3);
+		  $start = ($page - 1) * $config["per_page"];
+
+		  $output = array(
+		   'pagination_link'  => $this->pagination->create_links(),
+		   'country_table'   => $this->crud_model->fetch_details_view_paiement_padding($config["per_page"], $start)
+		  );
+		  echo json_encode($output);
+		}
+
+
+		function fetch_search_view_paiements_padding()
+		{
+		  $output = '';
+		  $query = '';
+		  if($this->input->post('query'))
+		  {
+		   $query = $this->input->post('query');
+		  }
+		  $data = $this->crud_model->fetch_data_search_paiement_padding($query);
+		   $output .= '
+		      <table class="table-striped  nk-tb-list nk-tb-ulist dataTable no-footer" data-auto-responsive="false" id="user_data" role="grid" aria-describedby="DataTables_Table_1_info">
+		          <thead>  
+		            <tr>
+		               <th width="5%">
+		                 <div class="form-inline">
+		                   <button type="button" name="delete" class="btn btn-danger btn-circle btn-sm coucou_delete"><i class="fa fa-trash"></i> del</button>
+		                 </div>
+		               </th>         
+		               <th width="10%">Image</th>
+		               <th width="15%">Nom du client</th>  
+		               <th width="5%">Code de transaction</th>
+		               <th width="10%">Montant</th>
+		               <th width="15%">Mobile</th>
+		               <th width="10%">Mis à jour</th>
+		               <th width="5%">valider</th> 
+		               <th width="5%">Supprimer</th>  
+		            </tr> 
+		         </thead> 
+		         <tbody id="example-tbody">
+		      ';
+		      if ($data->num_rows() < 0) {
+		        
+		      }
+		      else{
+		        $mobile = '';
+
+		        foreach($data->result() as $row)
+		        {
+
+		          if ($row->motif =="m-pesa") {
+		            $mobile = '
+		            <img src="'.base_url().'upload/module/m-pesa.com.png" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+		            ';
+		          }
+		          elseif ($row->motif =="airtel money") {
+		            $mobile = '
+		            <img src="'.base_url().'upload/module/airtel.jpg" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+		            ';
+		          }
+		          else{
+		             $mobile = '';
+		          }
+
+
+		         $output .= '
+		         <tr>
+		          <td>
+		            <input type="checkbox" class="delete_checkbox mr-1" value="'.$row->code.'" />
+		            <button type="button" name="update" code="'.$row->code.'" class="btn btn-dark btn-circle btn-sm voir" user_id="'.$row->user_id.'" first_name="'.$row->first_name.'"><i class="fa fa-eye"></i></button>
+		          </td>
+		          <td><img src="'.base_url().'upload/photo/'.$row->image.'" class="img img-responsive img-thumbnail" width="50" height="35" style="border-radius:50%;" /></td>
+
+		          <td>'.nl2br(substr($row->first_name.'-'.$row->last_name, 0,15)).'<br>
+		            <a href="tel:'.nl2br(substr($row->telephone, 0,10)).'">'.nl2br(substr($row->telephone, 0,10)).'</a> '.'</td>
+		          <td>'.nl2br(substr($row->code, 0,20)).'</td>
+		          <td>'.nl2br(substr($row->montant, 0,20)).'$'.'</td>
+		          <td>'.$mobile.'</td>
+		          <td>'.nl2br(substr(date(DATE_RFC822, strtotime($row->created_at)), 0, 23)).'</td>
+		          
+		          <td><button type="button" name="valider_liste" code="'.$row->code.'" class="btn btn-success btn-circle btn-sm valider_liste"><i class="fa fa-check"></i></button></td>
+		          <td><button type="button" name="delete" code="'.$row->code.'" class="btn btn-danger btn-circle btn-sm delete"><i class="fa fa-trash"></i></button></td>
+		          
+
+		         </tr>
+		         ';
+		        }
+		      }
+		      $output .= '
+		          </tbody>
+		          <tfoot>  
+		            <tr>         
+		              <th width="5%"> <button type="button" name="delete" class="btn btn-danger btn-circle btn-sm coucou_delete"><i class="fa fa-trash"></i> del</button></th>         
+		               <th width="10%">Image</th>
+		               <th width="15%">Nom du client</th>  
+		               <th width="5%">Code de transaction</th>
+		               <th width="10%">Montant</th>
+		               <th width="15%">Mobile</th>
+		               <th width="10%">Mis à jour</th>
+		               <th width="5%">valider</th> 
+		               <th width="5%">Supprimer</th> 
+		            </tr> 
+		         </tfoot>   
+		            
+		        </table>';
+		  echo $output;
+		}
+
+
+
+	// appell showVente
+	function showVente()
+	{
+		$user_id = $this->input->post("user_id");
+		$code = $this->input->post("code");
+	    echo $this->affichage_view_cart_padding_vente($user_id, $code);
+	}
+
+	// affichage des ventes en attente
+	function affichage_view_cart_padding_vente($user_id, $code)
+	{
+
+	  $output = '';
+	  
+	  $count = 0;
+	  $net_apayer 	= $this->crud_model->padding_vente_calcul_net_apayer($user_id, $code);
+	  $produit 		= $this->crud_model->padding_vente_detail_cart($user_id, $code);
+	  if ($produit->num_rows() > 0) {
+
+	  	  $output .= '
+			  <div class="table-responsive mb-4">
+			  
+			   <br />
+			   <table class="table panier_table" id="panier_table">
+			   <thead class="bg-light">
+				    <tr>
+				     <th class="border-0" scope="col">
+				     	<strong class="text-small text-uppercase">Image</strong>
+				     </th>
+				     <th class="border-0" scope="col">
+				     	<strong class="text-small text-uppercase">Nom du produit</strong>
+				     </th>
+				     <th class="border-0" scope="col">
+				     	<strong class="text-small text-uppercase">Quantité</strong>
+				     </th>
+				     <th class="border-0" scope="col">
+				     	<strong class="text-small text-uppercase">Prix</strong>
+				     </th>
+				     <th class="border-0" scope="col">
+				     	<strong class="text-small text-uppercase">Prix total</strong>
+				     </th>
+				     
+				    
+				    </tr>
+			    </thead>
+			    <tbody>
+
+		  ';
+
+	  	  foreach($produit->result_array() as $items)
+		  {
+			   $count++;
+			   $output .= '
+			   <tr> 
+			   	<td class="align-middle border-0"><img src="'.base_url().'upload/product/'.$items["product_image"].'" class="img-thumbnail" width="40" height="30" /></td>
+			    <td class="align-middle border-0">'.$items["product_name"].'</td>
+			    <td class="align-middle border-0"> 
+
+			    <!--<input type="number" min="1" name="" value="'.$items["quantity"].'" class="form-control" placeholder="La quantité"> -->
+			     '.$items["quantity"].'
+			     </td>
+			    <td class="align-middle border-0">'.$items["product_price"].'$</td>
+			    <td class="align-middle border-0">'.$items["product_priceTotal"].'$</td>
+			    
+			   </tr>
+			   ';
+		  }
+		  $output .= '
+			   <tr>
+			    <td colspan="4" align="right" class="align-middle border-0">Total</td>
+			    <td class="align-middle border-0">'.$net_apayer.'$</td>
+			   </tr>
+			   </tbody>
+			  </table>
+
+			  </div>
+
+			  
+		  ';
+
+		  
+	  }
+	  else{
+
+	  	$output .= '
+	   		<div class="col-xl-3 col-lg-4 col-sm-6"></div>
+
+	  		 <div class="col-xl-6 col-lg-4 col-sm-6">
+	  		 <img data-src="holder.js/32x32?theme=thumb&amp;bg=007bff&amp;fg=007bff&amp;size=1" alt="32x32" class="mr-2 rounded" style="width: 100%; height: 100;" src="data:'.base_url().'upload/annumation/b.gif" srcset="'.base_url().'upload/annumation/b.gif" data-holder-rendered="true" style="border-radius: 100px;">
+	  		 </div>
+	  		
+	  		 <div class="col-xl-3 col-lg-4 col-sm-6"></div>
+	   ';
+
+	  }
+	  
+  	 return $output;
+	}
+	// fin affichage des ventes en attente
+
+	// valider trancation
+    function valider_multiple_fausse_tranaction()
+    {
+        if($this->input->post('checkbox_value'))
+        {
+           $id = $this->input->post('checkbox_value');
+           for($count = 0; $count < count($id); $count++)
+           {
+                $code    = $id[$count];
+                $info_pro = $this->crud_model->get_info_padding_transaction($code);
+                $month = $this->crud_model->get_info_mois();
+                $year = $this->crud_model->get_info_annee();
+
+
+
+                foreach ($info_pro as $key) {
+                    $idpersonne   =  $key['idpersonne'];
+                    $date_paie    =  $key['date_paie'];
+                    $montant      =  $key['montant'];
+                    $motif        =  $key['motif'];
+                    $token        =  $key['token'];
+                    $codes  	  =  $key['code'];
+                    $first_name   =  $key['first_name'];
+                    $last_name    =  $key['last_name'];
+                    $email  	  =  $key['email'];
+                    $telephone    =  $key['telephone'];
+                    $adresse1  	  =  $key['adresse1'];
+                    $adresse2     =  $key['adresse2'];
+
+                    $insertdata = array(
+                        'idpersonne'      => $idpersonne,
+                        'date_paie'       => $date_paie,
+                        'montant'         => $montant,
+                        'motif'           => $motif ,
+                        'token'           => $token,
+                        'code'     		  => $codes,
+                        'first_name'      => $first_name,
+                        'last_name'       => $last_name,
+                        'email'     	  => $email,
+                        'telephone'       => $telephone,
+                        'adresse1'     	  => $adresse1,
+                        'adresse2'     	  => $adresse2,
+                        'year'      	  => $year,
+                        'month'      	  => $month
+                    );
+
+                    $query = $this->crud_model->insert_paiement_compte($insertdata);
+                    if ($query > 0) {
+                        # code...
+                        $url    ="user/facturePaiement/". $codes;
+                        $nom    = $this->crud_model->get_name_user($idpersonne);
+
+                        // $nom = $this->input->post('titre');
+                        $message ="Bonjour ".$nom." votre paiement a été validé avec succès 👌";
+
+                        $notification = array(
+                          'titre'     =>    "Félicitation d'avance!!!",
+                          'icone'     =>    "fa fa-check",
+                          'message'   =>     $message,
+                          'url'       =>     $url,
+                          'id_user'   =>     $idpersonne
+                        );
+                        
+                        $not = $this->crud_model->insert_notification($notification);
+
+                        $dataUpdate = array(
+		                	'etat_vente'	=> 1
+		                );
+		                $this->crud_model->updated_padding_vente($code, $dataUpdate);
+
+                    }
+
+                }
+
+           }
+
+           echo("Validation paiement mise à jour avec succès!! 👌");
+
+        }
+    }
+    // fin valider trancation
+
+
+    /*
+    paiement normal
+    **********************************************
+    ===============================================
+    */
+    function pagination_view_paiements_normal()
+		{
+
+		  $this->load->library("pagination");
+		  $config = array();
+		  $config["base_url"] = "#";
+		  $config["total_rows"] = $this->crud_model->count_all_view_paiement_normaux();
+		  $config["per_page"] = 5;
+		  $config["uri_segment"] = 3;
+		  $config["use_page_numbers"] = TRUE;
+		  $config["full_tag_open"] = '<ul class="nav pagination">';
+		  $config["full_tag_close"] = '</ul>';
+		  $config["first_tag_open"] = '<li class="page-item">';
+		  $config["first_tag_close"] = '</li>';
+		  $config["last_tag_open"] = '<li class="page-item">';
+		  $config["last_tag_close"] = '</li>';
+		  $config['next_link'] = '<li class="page-item active"><i class="btn btn-info">&gt;&gt;</i>';
+		  $config["next_tag_open"] = '<li class="page-item">';
+		  $config["next_tag_close"] = '</li>';
+		  $config["prev_link"] = '<li class="page-item active"><i class="btn btn-info">&lt;&lt;</i>';
+		  $config["prev_tag_open"] = "<li class='page-item'>";
+		  $config["prev_tag_close"] = "</li>";
+		  $config["cur_tag_open"] = "<li class='page-item active'><a href='#' class='page-link'>";
+		  $config["cur_tag_close"] = "</a></li>";
+		  $config["num_tag_open"] = "<li class='page-item'>";
+		  $config["num_tag_close"] = "</li>";
+		  $config["num_links"] = 1;
+		  $this->pagination->initialize($config);
+		  $page = $this->uri->segment(3);
+		  $start = ($page - 1) * $config["per_page"];
+
+		  $output = array(
+		   'pagination_link'  => $this->pagination->create_links(),
+		   'country_table'   => $this->crud_model->fetch_details_view_paiement_normal($config["per_page"], $start)
+		  );
+		  echo json_encode($output);
+		}
+
+
+		function fetch_search_view_paiements_normal()
+		{
+		  $output = '';
+		  $query = '';
+		  if($this->input->post('query'))
+		  {
+		   $query = $this->input->post('query');
+		  }
+		  $data = $this->crud_model->fetch_data_search_paiement_normal($query);
+		  $output .= '
+		      <table class="table-striped  nk-tb-list nk-tb-ulist dataTable no-footer" data-auto-responsive="false" id="user_data" role="grid" aria-describedby="DataTables_Table_1_info">
+		          <thead>  
+		            <tr>
+		               <th width="10%">
+		                 operation
+		               </th>         
+		               <th width="10%">Image</th>
+		               <th width="15%">Nom du client</th>  
+		               <th width="5%">Code de transaction</th>
+		               <th width="10%">Montant</th>
+		               <th width="15%">Mobile</th>
+		               <th width="10%">Mis à jour</th>
+		               <th width="5%">imprimmer</th> 
+
+		            </tr> 
+		         </thead> 
+		         <tbody id="example-tbody">
+		      ';
+		      if ($data->num_rows() < 0) {
+		        
+		      }
+		      else{
+
+		        $mobile = '';
+		        $eteat_facture ='';
+
+		        foreach($data->result() as $row)
+		        {
+
+		          if ($row->motif =="m-pesa") {
+		            $mobile = '
+		            <img src="'.base_url().'upload/module/m-pesa.com.png" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+		            ';
+		          }
+		          elseif ($row->motif =="airtel money") {
+		            $mobile = '
+		            <img src="'.base_url().'upload/module/airtel.jpg" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+		            ';
+		          }
+		          else{
+		             $mobile = '';
+		          }
+
+		          if ($row->etat_paiement ==0) {
+		            $eteat_facture = '
+
+		            <button type="button" name="delete" code="'.$row->code.'" class="btn btn-danger btn-circle btn-sm delete mr-1"><i class="fa fa-trash"></i></button> 
+
+		            <button type="button" name="update" code="'.$row->code.'" class="btn btn-dark btn-circle btn-sm voir" user_id="'.$row->idpersonne.'" first_name="'.$row->first_name.'"><i class="fa fa-eye"></i></button> 
+
+		            ';
+		          }
+		          elseif ($row->etat_paiement ==1) {
+		            $eteat_facture = '
+
+		            <button type="button" name="update" code="'.$row->code.'" class="btn btn-success btn-circle btn-sm voir" user_id="'.$row->idpersonne.'" first_name="'.$row->first_name.'"><i class="fa fa-check"></i></button>
+
+		            <button type="button" name="update" code="'.$row->code.'" class="btn btn-dark btn-circle btn-sm voir" user_id="'.$row->idpersonne.'" first_name="'.$row->first_name.'"><i class="fa fa-eye"></i></button>
+		            ';
+		          }
+		          else{
+		             $eteat_facture = '';
+		          }
+
+
+
+		         $output .= '
+		         <tr>
+		          <td>
+		            '.$eteat_facture.'
+		          </td>
+		          <td><img src="'.base_url().'upload/photo/'.$row->image.'" class="img img-responsive img-thumbnail" width="50" height="35" style="border-radius:50%;" /></td>
+
+		          <td>'.nl2br(substr($row->first_name.'-'.$row->last_name, 0,15)).'<br>
+		            <a href="tel:'.nl2br(substr($row->telephone, 0,10)).'">'.nl2br(substr($row->telephone, 0,10)).'</a> '.'</td>
+		          <td>'.nl2br(substr($row->code, 0,20)).'</td>
+		          <td>'.nl2br(substr($row->montant, 0,20)).'$'.'</td>
+		          <td>'.$mobile.'</td>
+		          <td>'.nl2br(substr(date(DATE_RFC822, strtotime($row->created_at)), 0, 23)).'</td>
+		          
+		         
+		          <td><a href="'.base_url().'admin/facturePaiement/'.$row->code.'" class="btn btn-dark btn-circle btn-sm"><i class="fa fa-print"></i></a></td>
+		          
+
+		         </tr>
+		         ';
+		        }
+		      }
+		      $output .= '
+		          </tbody>
+		          <tfoot>  
+		            <tr>         
+		              <th width="5%">
+		                 operation
+		               </th>         
+		               <th width="10%">Image</th>
+		               <th width="15%">Nom du client</th>  
+		               <th width="5%">Code de transaction</th>
+		               <th width="10%">Montant</th>
+		               <th width="15%">Mobile</th>
+		               <th width="10%">Mis à jour</th>
+		               <th width="5%">imprimmer</th>
+		            </tr> 
+		         </tfoot>   
+		            
+		        </table>';
+		  echo $output;
+		}
+
+
+
 
 
 

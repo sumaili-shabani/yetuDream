@@ -91,6 +91,9 @@
                         <h6 class="collapse-header">Paiement galerie:</h6>
                         <a class="collapse-item" href="<?php echo(base_url()) ?>admin/compte">Nos paiements</a>
                         <a class="collapse-item" href="<?php echo(base_url()) ?>admin/stat_paiement">Statistique sur paiement</a>
+                        <div class="dropdown-divider"></div>
+
+                        <a class="collapse-item" href="<?php echo(base_url()) ?>admin/paiement_pading">Paiement en attente</a>
                        
                     </div>
                 </div>

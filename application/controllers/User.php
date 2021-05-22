@@ -9,10 +9,10 @@ class user extends CI_Controller
 	public function __construct()
 	{
 	 	  parent::__construct();
-		  // if(!$this->session->userdata('id'))
-		  // {
-		  //     	redirect(base_url().'login');
-		  // }
+		  if(!$this->session->userdata('id'))
+		  {
+		      	redirect(base_url().'login');
+		  }
 		  $this->load->library('form_validation');
 		  $this->load->library('encryption');
 	      // $this->load->library('pdf');
@@ -71,6 +71,17 @@ class user extends CI_Controller
 		$this->load->view('backend/user/recent_lot', $data);
 	}
 
+	public function panier(){
+		$data["title"] = "Mon panier de produits"; 
+		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_connected($this->connected); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		
+		$this->load->view('backend/user/panier', $data);
+	}
+
 	public function detailProduct($param1){
 		$title_product = $this->crud_model->get_name_article_tag($param1);
 		$data['title'] = "Détail de ".$title_product; 
@@ -104,6 +115,16 @@ class user extends CI_Controller
 		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
 		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
 		$this->load->view('backend/user/contact', $data);
+	}
+
+	public function contrat(){
+		$data["title"] = "Contrat et politique de l'utilisation";  
+		$data['users'] = $this->crud_model->fetch_connected($this->connected); 
+		$data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		$data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_connected($this->connected); 
+		$data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		$data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+		$this->load->view('backend/user/contrat', $data);
 	}
 
 	/*
@@ -407,7 +428,8 @@ class user extends CI_Controller
 			        'date_paie'       => date('Y-m-d'),
 			        'montant'         => $this->input->post('montant'),
 			        'motif'     	  => $this->input->post('motif'),
-			        'token'      	  => $token_rand
+			        'token'      	  => $token,
+			        'code'      	  => $token_rand
 			    );
 
 		  	   // envoie de notifications 
@@ -435,14 +457,15 @@ class user extends CI_Controller
 
 				                $data = array(
 				                  
-				                  'product_id'      =>  $product_id,
-				                  'product_name'      =>  $product_name,
-				                  'quantity'        =>  $quantity,
-				                  'product_price'     =>  $product_price,
+				                  'product_id'      	=>  $product_id,
+				                  'product_name'      	=>  $product_name,
+				                  'quantity'        	=>  $quantity,
+				                  'product_price'     	=>  $product_price,
 				                  'product_priceTotal'  =>  $product_priceTotal,
-				                  'product_image'     =>  $product_image,
-				                  'user_id'       =>  $user_id,
-				                  'code'          =>  $code
+				                  'product_image'     	=>  $product_image,
+				                  'user_id'       		=>  $user_id,
+				                  'token'         		=>  $token,
+				                  'code'          		=>  $token_rand
 				                );
 
 				                // confirmation de vente en attante
@@ -1478,6 +1501,21 @@ class user extends CI_Controller
 	       }  
 	}
 
+
+
+	function facturePaiement($code=''){
+       $customer_id = "paiement facture n° ".$code;
+       $idpersonne = $this->crud_model->fetch_clicent_Panier_tag($code);
+       // operation d'envois des notification 
+
+       // fin envois 
+       $html_content = '';
+       $html_content .= $this->crud_model->client_fetch_single_details_facture($idpersonne, $code);
+       echo($html_content);
+       // $this->pdf->loadHtml($html_content);
+       // $this->pdf->render();
+       // $this->pdf->stream("paiement reçu_".$customer_id.".pdf", array("Attachment"=>0));
+	}
 
 
 

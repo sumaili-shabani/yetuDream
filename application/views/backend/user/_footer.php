@@ -2,30 +2,30 @@
     <div class="container py-4">
       <div class="row py-5">
         <div class="col-md-4 mb-3 mb-md-0">
-          <h6 class="text-uppercase mb-3">Customer services</h6>
+          <h6 class="text-uppercase mb-3">Nos services clientels</h6>
           <ul class="list-unstyled mb-0">
-            <li><a class="footer-link" href="javascript:void(0);">Help &amp; Contact Us</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Returns &amp; Refunds</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Online Stores</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Terms &amp; Conditions</a></li>
+            <li><a class="footer-link" href="<?php echo(base_url()) ?>user/contact">Aide &amp; Contactez-nous</a></li>
+            <li><a class="footer-link" href="<?php echo(base_url()) ?>user/panier">Voir le  panier</a></li>
+            <li><a class="footer-link" href="<?php echo(base_url()) ?>user/shop">Notre shop actuel</a></li>
+            <li><a class="footer-link" href="<?php echo(base_url()) ?>user/contrat">Termes  &amp; Conditions</a></li>
           </ul>
         </div>
         <div class="col-md-4 mb-3 mb-md-0">
-          <h6 class="text-uppercase mb-3">Company</h6>
+          <h6 class="text-uppercase mb-3">Notre campagnie</h6>
           <ul class="list-unstyled mb-0">
-            <li><a class="footer-link" href="javascript:void(0);">What We Do</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Available Services</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Latest Posts</a></li>
+            <li><a class="footer-link" href="javascript:void(0);">Qu'est-ce que nous faisons?</a></li>
+            <li><a class="footer-link" href="javascript:void(0);">Nos précieux services</a></li>
+            <li><a class="footer-link" href="javascript:void(0);">Nouvelles postes</a></li>
             <li><a class="footer-link" href="javascript:void(0);">FAQs</a></li>
           </ul>
         </div>
         <div class="col-md-4">
-          <h6 class="text-uppercase mb-3">Social media</h6>
+          <h6 class="text-uppercase mb-3">Medias sociaux</h6>
           <ul class="list-unstyled mb-0">
-            <li><a class="footer-link" href="javascript:void(0);">Twitter</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Instagram</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Tumblr</a></li>
-            <li><a class="footer-link" href="javascript:void(0);">Pinterest</a></li>
+            <li><a class="footer-link" target="_blank" href="<?php echo($facebook_info) ?>">Facebook</a></li>
+            <li><a class="footer-link" target="_blank" href="<?php echo($twitter_info) ?>">Twitter</a></li>
+            <li><a class="footer-link" target="_blank" href="<?php echo($linkedin_info) ?>">Linkedin</a></li>
+            <li><a class="footer-link" target="_blank" href="javascript:void(0);">Youtube</a></li>
           </ul>
         </div>
       </div>

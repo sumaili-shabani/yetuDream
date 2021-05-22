@@ -90,11 +90,29 @@ class crud_model extends CI_Model{
       $this->db->limit(1);
       return $this->db->get_where('users', array('email' => $email));
   }
-// utilisateur connecte
+  // utilisateur connecte
   function fetch_connected($id){
       $this->db->where('id',$id);
       return $this->db->get('users')->result_array();
   }
+
+   // nombre des produits au panier 
+  function fetch_clicent_Panier_tag($code){
+      $nombreTotal;
+      $query= $this->db->query("SELECT idpersonne FROM paiement WHERE code='".$code."'");
+      if ($query->num_rows() > 0) {
+        foreach ($query->result_array() as $key) {
+          # code...
+          $nombreTotal = $key['idpersonne'];
+        }
+
+      }
+      else{
+        $nombreTotal = 0;
+      }
+      return $nombreTotal;
+  }
+
   // online 
   function insert_online($data){
       $this->db->insert('online', $data);
@@ -140,6 +158,11 @@ class crud_model extends CI_Model{
     $this->db->delete('notification');
   }
 
+  //supression de notification tag
+  function ondelete_notifacation($id_user,$url){
+    $this->db->query("DELETE FROM notification WHERE url='".$url."' AND id_user=".$id_user." ");
+  }
+
   //supression de favories
   function delete_favory_tag($idfovorie){
     $this->db->where('idfovorie', $idfovorie);
@@ -168,7 +191,15 @@ class crud_model extends CI_Model{
 
   // utilisateur vente en attente
   function fetch_connected_vente($user_id){
-      $this->db->where('user_id',$user_id);
+      $this->db->group_by('code');
+      return $this->db->get_where('profile_padding_vente', array(
+        'user_id'     =>  $user_id,
+        'etat_vente'  => 0
+      ))->result_array();
+  }
+
+  // utilisateur vente en attente
+  function fetch_connected_vente_all(){
       $this->db->group_by('code');
       return $this->db->get('profile_padding_vente')->result_array();
   }
@@ -1004,6 +1035,26 @@ class crud_model extends CI_Model{
     {
       $query = $this->db->get("profile_product");
       $this->db->limit(30);
+      return $query->num_rows();
+    }
+
+    // script pour information  des paiements en attente
+    function count_all_view_paiement_padding()
+    {
+      $this->db->where("etat_vente", 0);
+      $this->db->group_by("code");
+      $this->db->limit(30);
+      $query = $this->db->get("profile_padding_vente");
+      return $query->num_rows();
+    }
+
+    // script pour information  des paiements normaux
+    function count_all_view_paiement_normaux()
+    {
+
+      $this->db->group_by("code");
+      $this->db->limit(30);
+      $query = $this->db->get("profile_paiement");
       return $query->num_rows();
     }
 
@@ -2417,12 +2468,606 @@ class crud_model extends CI_Model{
      $this->db->delete("contact");  
   }
 
+  function delete_transaction($code)  
+  {  
+     $this->db->where("code", $code);  
+     $this->db->delete("pading_vente");  
+  }
+
+  function delete_transaction_paiement($code)  
+  {  
+     $this->db->where("code", $code);  
+     $this->db->delete("paiement");  
+  }
+
   function fetch_single_contact($id)  
   {  
      $this->db->where("id", $id);  
      $query=$this->db->get('contact');  
      return $query->result();  
   }
+
+    /*
+    les scripts pour confirmation de paiement
+    ========================================
+    =======================================
+    =======================================
+    */
+
+
+    // script pour le paiement en padding
+
+    function fetch_details_view_paiement_padding($limit, $start)
+    {
+      $output = '';
+      $this->db->select("*");
+      $this->db->where("etat_vente", 0);
+      $this->db->from("profile_padding_vente");
+      $this->db->group_by("code");
+      $this->db->limit($limit, $start);
+      $query = $this->db->get();
+      $output .= '
+      <table class="table-striped  nk-tb-list nk-tb-ulist dataTable no-footer" data-auto-responsive="false" id="user_data" role="grid" aria-describedby="DataTables_Table_1_info">
+          <thead>  
+            <tr>
+               <th width="5%">
+                 <div class="form-inline">
+                   <button type="button" name="delete" class="btn btn-danger btn-circle btn-sm coucou_delete"><i class="fa fa-trash"></i> del</button>
+                 </div>
+               </th>         
+               <th width="10%">Image</th>
+               <th width="15%">Nom du client</th>  
+               <th width="5%">Code de transaction</th>
+               <th width="10%">Montant</th>
+               <th width="15%">Mobile</th>
+               <th width="10%">Mis à jour</th>
+               <th width="5%">valider</th> 
+               <th width="5%">Supprimer</th>  
+            </tr> 
+         </thead> 
+         <tbody id="example-tbody">
+      ';
+      if ($query->num_rows() < 0) {
+        
+      }
+      else{
+        $mobile = '';
+
+        foreach($query->result() as $row)
+        {
+
+          if ($row->motif =="m-pesa") {
+            $mobile = '
+            <img src="'.base_url().'upload/module/m-pesa.com.png" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+            ';
+          }
+          elseif ($row->motif =="airtel money") {
+            $mobile = '
+            <img src="'.base_url().'upload/module/airtel.jpg" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+            ';
+          }
+          else{
+             $mobile = '';
+          }
+
+
+         $output .= '
+         <tr>
+          <td>
+            <input type="checkbox" class="delete_checkbox mr-1" value="'.$row->code.'" />
+            <button type="button" name="update" code="'.$row->code.'" class="btn btn-dark btn-circle btn-sm voir" user_id="'.$row->user_id.'" first_name="'.$row->first_name.'"><i class="fa fa-eye"></i></button>
+          </td>
+          <td><img src="'.base_url().'upload/photo/'.$row->image.'" class="img img-responsive img-thumbnail" width="50" height="35" style="border-radius:50%;" /></td>
+
+          <td>'.nl2br(substr($row->first_name.'-'.$row->last_name, 0,15)).'<br>
+            <a href="tel:'.nl2br(substr($row->telephone, 0,10)).'">'.nl2br(substr($row->telephone, 0,10)).'</a> '.'</td>
+          <td>'.nl2br(substr($row->code, 0,20)).'</td>
+          <td>'.nl2br(substr($row->montant, 0,20)).'$'.'</td>
+          <td>'.$mobile.'</td>
+          <td>'.nl2br(substr(date(DATE_RFC822, strtotime($row->created_at)), 0, 23)).'</td>
+          
+          <td><button type="button" name="valider_liste" code="'.$row->code.'" class="btn btn-success btn-circle btn-sm valider_liste"><i class="fa fa-check"></i></button></td>
+          <td><button type="button" name="delete" code="'.$row->code.'" class="btn btn-danger btn-circle btn-sm delete"><i class="fa fa-trash"></i></button></td>
+          
+
+         </tr>
+         ';
+        }
+      }
+      $output .= '
+          </tbody>
+          <tfoot>  
+            <tr>         
+              <th width="5%"> <button type="button" name="delete" class="btn btn-danger btn-circle btn-sm coucou_delete"><i class="fa fa-trash"></i> del</button></th>         
+               <th width="10%">Image</th>
+               <th width="15%">Nom du client</th>  
+               <th width="5%">Code de transaction</th>
+               <th width="10%">Montant</th>
+               <th width="15%">Mobile</th>
+               <th width="10%">Mis à jour</th>
+               <th width="5%">valider</th> 
+               <th width="5%">Supprimer</th> 
+            </tr> 
+         </tfoot>   
+            
+        </table>';
+      return $output;
+    }
+
+    function fetch_data_search_paiement_padding($query)
+   {
+      $this->db->select("*");
+      $this->db->where("etat_vente", 0);
+      $this->db->from("profile_padding_vente");
+      $this->db->group_by("code");
+      $this->db->limit(10);
+      if($query != '')
+      {
+       $this->db->like('code', $query);
+       $this->db->or_like('first_name', $query);
+       $this->db->or_like('last_name', $query);
+       $this->db->or_like('telephone', $query);
+      }
+      return $this->db->get();
+   }
+
+  function get_info_padding_transaction($code){
+      $this->db->limit(1);
+      $nom = $this->db->get_where("paiement_pading", array(
+        'code' =>  $code
+      ))->result_array();
+      return $nom;
+  }
+  // retour de nom de jours
+  function get_info_mois(){
+      $journee='';
+      $nom = $this->db->query("SELECT MONTH(now()) AS jour");
+      foreach ($nom->result_array() as $key) {
+        $journee=$key['jour'];
+      }
+      return $journee;
+  }
+
+   // retour de nom de jours
+  function get_info_annee(){
+      $journee='';
+      $nom = $this->db->query("SELECT YEAR(now()) AS jour");
+      foreach ($nom->result_array() as $key) {
+        $journee=$key['jour'];
+      }
+      return $journee;
+  }
+
+  // mdiffication dans padding vente 
+  function updated_padding_vente($code, $data)  
+  {  
+     $this->db->where("code", $code);  
+     $this->db->update("pading_vente", $data);  
+  }
+
+   // script pour le paiement
+    function fetch_details_view_paiement_normal($limit, $start)
+    {
+      $output = '';
+      $this->db->select("*");
+      $this->db->from("profile_paiement");
+      $this->db->group_by("code");
+      $this->db->limit($limit, $start);
+      $query = $this->db->get();
+      $output .= '
+      <table class="table-striped  nk-tb-list nk-tb-ulist dataTable no-footer" data-auto-responsive="false" id="user_data" role="grid" aria-describedby="DataTables_Table_1_info">
+          <thead>  
+            <tr>
+               <th width="10%">
+                 operation
+               </th>         
+               <th width="10%">Image</th>
+               <th width="15%">Nom du client</th>  
+               <th width="5%">Code de transaction</th>
+               <th width="10%">Montant</th>
+               <th width="15%">Mobile</th>
+               <th width="10%">Mis à jour</th>
+               <th width="5%">imprimmer</th> 
+
+            </tr> 
+         </thead> 
+         <tbody id="example-tbody">
+      ';
+      if ($query->num_rows() < 0) {
+        
+      }
+      else{
+
+        $mobile = '';
+        $eteat_facture ='';
+
+        foreach($query->result() as $row)
+        {
+
+          if ($row->motif =="m-pesa") {
+            $mobile = '
+            <img src="'.base_url().'upload/module/m-pesa.com.png" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+            ';
+          }
+          elseif ($row->motif =="airtel money") {
+            $mobile = '
+            <img src="'.base_url().'upload/module/airtel.jpg" class="img-thumbnail img-responsive" style="height: 25px; width: 50px;">
+            ';
+          }
+          else{
+             $mobile = '';
+          }
+
+          if ($row->etat_paiement ==0) {
+            $eteat_facture = '
+
+            <button type="button" name="delete" code="'.$row->code.'" class="btn btn-danger btn-circle btn-sm delete mr-1"><i class="fa fa-trash"></i></button> 
+
+            <button type="button" name="update" code="'.$row->code.'" class="btn btn-dark btn-circle btn-sm voir" user_id="'.$row->idpersonne.'" first_name="'.$row->first_name.'"><i class="fa fa-eye"></i></button> 
+
+            ';
+          }
+          elseif ($row->etat_paiement ==1) {
+            $eteat_facture = '
+
+            <button type="button" name="update" code="'.$row->code.'" class="btn btn-success btn-circle btn-sm voir" user_id="'.$row->idpersonne.'" first_name="'.$row->first_name.'"><i class="fa fa-check"></i></button>
+
+            <button type="button" name="update" code="'.$row->code.'" class="btn btn-dark btn-circle btn-sm voir" user_id="'.$row->idpersonne.'" first_name="'.$row->first_name.'"><i class="fa fa-eye"></i></button>
+            ';
+          }
+          else{
+             $eteat_facture = '';
+          }
+
+
+
+         $output .= '
+         <tr>
+          <td>
+            '.$eteat_facture.'
+          </td>
+          <td><img src="'.base_url().'upload/photo/'.$row->image.'" class="img img-responsive img-thumbnail" width="50" height="35" style="border-radius:50%;" /></td>
+
+          <td>'.nl2br(substr($row->first_name.'-'.$row->last_name, 0,15)).'<br>
+            <a href="tel:'.nl2br(substr($row->telephone, 0,10)).'">'.nl2br(substr($row->telephone, 0,10)).'</a> '.'</td>
+          <td>'.nl2br(substr($row->code, 0,20)).'</td>
+          <td>'.nl2br(substr($row->montant, 0,20)).'$'.'</td>
+          <td>'.$mobile.'</td>
+          <td>'.nl2br(substr(date(DATE_RFC822, strtotime($row->created_at)), 0, 23)).'</td>
+          
+         
+          <td><a href="'.base_url().'admin/facturePaiement/'.$row->code.'" class="btn btn-dark btn-circle btn-sm"><i class="fa fa-print"></i></a></td>
+          
+
+         </tr>
+         ';
+        }
+      }
+      $output .= '
+          </tbody>
+          <tfoot>  
+            <tr>         
+              <th width="5%">
+                 operation
+               </th>         
+               <th width="10%">Image</th>
+               <th width="15%">Nom du client</th>  
+               <th width="5%">Code de transaction</th>
+               <th width="10%">Montant</th>
+               <th width="15%">Mobile</th>
+               <th width="10%">Mis à jour</th>
+               <th width="5%">imprimmer</th>
+            </tr> 
+         </tfoot>   
+            
+        </table>';
+      return $output;
+    }
+
+    function fetch_data_search_paiement_normal($query)
+   {
+      $this->db->select("*");
+      $this->db->from("profile_paiement");
+      $this->db->group_by("code");
+      $this->db->limit(10);
+      if($query != '')
+      {
+       $this->db->like('code', $query);
+       $this->db->or_like('first_name', $query);
+       $this->db->or_like('last_name', $query);
+       $this->db->or_like('telephone', $query);
+      }
+      return $this->db->get();
+   }
+
+   function update_paiement_etat($code, $data)  
+   {  
+         $this->db->where("code", $code);  
+         $this->db->update("paiement", $data);  
+   }
+
+  function fetch_single_details_facture($user_id, $code)
+  {
+
+        $nom_site = '';
+        $icone    = '';
+        $email    = '';
+
+        $info = $this->db->get('tbl_info')->result_array();
+        foreach ($info as $key) {
+          $nom_site = $key['nom_site'];
+          $icone    = $key['icone'];
+          $email    = $key['email'];
+          
+        }
+
+        $output = '';
+        $nomf;
+        $created_at;
+        $nom;
+        $icone;
+
+         
+
+         $message = "REPUBLIQUE DEMOCRATIQUE DU CONGO <br/>
+         <h3>
+            RECU DE PAIEMENT  AU SYSTEME ".$nom_site."
+         <h3>
+         ";
+
+         $output = '<div align="right">';
+         $output .= '<table width="100%" cellspacing="5" cellpadding="5" id="user_data" >';
+         $output .= '
+         <tr>
+          <td width="25%"><img src="'.base_url().'upload/tbl_info/'.$icone.'" width="150" height="100"/></td>
+          <td width="50%" align="center">
+           <p><b>'.$message.' </b></p>
+           <p><b>Mise à jour : </b>'.date('d/m/Y').'</p>
+
+           <hr>
+           
+          </td>
+
+          <td width="25%">
+          <img src="'.base_url().'upload/tbl_info/'.$icone.'" width="150" height="100" />
+          </td>
+
+
+         </tr>
+         ';
+      
+        $output .= '</table>';
+
+        $output .= '</div>';
+
+        $output .= $this->facture_view_cart_padding_vente($user_id, $code);
+
+        
+        $output .= '
+  
+
+        <hr>
+    
+        <div align="right" style="margin-botton:20px;">
+
+            <a href="'.base_url().'admin/compte" style="text-decoration: none; color: black;">signature:</a>
+      
+        </div>
+        <div align="center" style="
+
+         background-image: url('.base_url().'upload/tbl_info/'.$icone.'); background-repeat: no-repeat; background-size: 40%; background-position: center; height:100px;">
+        </div>
+        
+        ';
+
+
+      
+        return $output;
+  }
+  // confirmation de paiement pour le client
+  function client_fetch_single_details_facture($user_id, $code)
+  {
+
+        $nom_site = '';
+        $icone    = '';
+        $email    = '';
+
+        $info = $this->db->get('tbl_info')->result_array();
+        foreach ($info as $key) {
+          $nom_site = $key['nom_site'];
+          $icone    = $key['icone'];
+          $email    = $key['email'];
+          
+        }
+
+        $output = '';
+        $nomf;
+        $created_at;
+        $nom;
+        $icone;
+
+         
+
+         $message = "REPUBLIQUE DEMOCRATIQUE DU CONGO <br/>
+         <h3>
+            RECU DE PAIEMENT  AU SYSTEME ".$nom_site."
+         <h3>
+         ";
+
+         $output = '<div align="right">';
+         $output .= '<table width="100%" cellspacing="5" cellpadding="5" id="user_data" >';
+         $output .= '
+         <tr>
+          <td width="25%"><img src="'.base_url().'upload/tbl_info/'.$icone.'" width="150" height="100"/></td>
+          <td width="50%" align="center">
+           <p><b>'.$message.' </b></p>
+           <p><b>Mise à jour : </b>'.date('d/m/Y').'</p>
+
+           <hr>
+           
+          </td>
+
+          <td width="25%">
+          <img src="'.base_url().'upload/tbl_info/'.$icone.'" width="150" height="100" />
+          </td>
+
+
+         </tr>
+         ';
+      
+        $output .= '</table>';
+
+        $output .= '</div>';
+
+        $output .= $this->facture_view_cart_padding_vente($user_id, $code);
+
+        
+        $output .= '
+  
+
+        <hr>
+    
+        <div align="right" style="margin-botton:20px;">
+
+            <a href="'.base_url().'user/achat" style="text-decoration: none; color: black;">signature:</a>
+      
+        </div>
+        <div align="center" style="
+
+         background-image: url('.base_url().'upload/tbl_info/'.$icone.'); background-repeat: no-repeat; background-size: 40%; background-position: center; height:100px;">
+        </div>
+        
+        ';
+
+
+      
+        return $output;
+  }
+
+  
+
+  // affichage des ventes en attente
+  function facture_view_cart_padding_vente($user_id, $code)
+  {
+
+    $output = '';
+    
+    $count = 0;
+    $net_apayer   = $this->padding_vente_calcul_net_apayer($user_id, $code);
+    $produit    = $this->padding_vente_detail_cart($user_id, $code);
+    if ($produit->num_rows() > 0) {
+
+        $output .= '
+        <div class="table-responsive mb-4">
+        
+         <br />
+         <table class="table panier_table" id="panier_table" border="1" style="
+                width: 100%;
+                  margin-bottom: 1rem;
+                  background-color: transparent;
+                  border: 1px solid #dee2e6;
+                  border-collapse: collapse;
+
+             ">
+         <thead class="bg-light">
+            <tr>
+             <th class="border-0" scope="col">
+              <strong class="text-small text-uppercase">Image</strong>
+             </th>
+             <th class="border-0" scope="col">
+              <strong class="text-small text-uppercase">Nom du produit</strong>
+             </th>
+             <th class="border-0" scope="col">
+              <strong class="text-small text-uppercase">Quantité</strong>
+             </th>
+             <th class="border-0" scope="col">
+              <strong class="text-small text-uppercase">Prix</strong>
+             </th>
+             <th class="border-0" scope="col">
+              <strong class="text-small text-uppercase">Prix total</strong>
+             </th>
+             
+            
+            </tr>
+          </thead>
+          <tbody>
+
+      ';
+
+        foreach($produit->result_array() as $items)
+      {
+         $count++;
+         $output .= '
+         <tr> 
+          <td class="align-middle border-0"><img src="'.base_url().'upload/product/'.$items["product_image"].'" class="img-thumbnail" width="40" height="30" /></td>
+          <td class="align-middle border-0">'.$items["product_name"].'</td>
+          <td class="align-middle border-0"> 
+
+          <!--<input type="number" min="1" name="" value="'.$items["quantity"].'" class="form-control" placeholder="La quantité"> -->
+           '.$items["quantity"].'
+           </td>
+          <td class="align-middle border-0">'.$items["product_price"].'$</td>
+          <td class="align-middle border-0">'.$items["product_priceTotal"].'$</td>
+          
+         </tr>
+         ';
+      }
+      $output .= '
+         <tr>
+          <td colspan="4" align="right" class="align-middle border-0">Total</td>
+          <td class="align-middle border-0">'.$net_apayer.'$</td>
+         </tr>
+         </tbody>
+        </table>
+
+        </div>
+
+        
+      ';
+
+      
+    }
+    else{
+
+      $output .= '
+        <div class="col-xl-3 col-lg-4 col-sm-6"></div>
+
+         <div class="col-xl-6 col-lg-4 col-sm-6">
+         <img data-src="holder.js/32x32?theme=thumb&amp;bg=007bff&amp;fg=007bff&amp;size=1" alt="32x32" class="mr-2 rounded" style="width: 100%; height: 100;" src="data:'.base_url().'upload/annumation/b.gif" srcset="'.base_url().'upload/annumation/b.gif" data-holder-rendered="true" style="border-radius: 100px;">
+         </div>
+        
+         <div class="col-xl-3 col-lg-4 col-sm-6"></div>
+     ';
+
+    }
+    
+     return $output;
+  }
+  // fin affichage des ventes en attente
+
+  function fetch_year()
+  {
+    $this->db->where('etat_paiement', 1);
+    $this->db->select('year');
+    $this->db->from('profile_paiement');
+    $this->db->group_by('year');
+    $this->db->order_by('year', 'DESC');
+    return $this->db->get();
+  }
+
+  function fetch_chart_data($year)
+  {
+
+    $this->db->order_by('year', 'ASC');
+    return $this->db->get_where('profile_paiement', array(
+      'year'          =>  $year,
+      'etat_paiement' =>  1
+    ));
+
+  }
+
+
+
 
 
 

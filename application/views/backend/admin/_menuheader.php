@@ -196,6 +196,10 @@
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Mes Activités
                                 </a>
+                                 <a class="dropdown-item" href="<?php echo(base_url())?>admin/paiement_pading">
+                                    <i class="fas fa-dolly-flatbed fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Les achats
+                                </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" onclick="return confirm('êtes-vous sûre de vouloire se deconnecter?');" href="<?php echo(base_url())?>login/logout">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

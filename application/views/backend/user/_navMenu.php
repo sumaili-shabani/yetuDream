@@ -119,7 +119,7 @@
           </ul>
           <ul class="navbar-nav ml-auto"> 
           	<!-- panier -->
-            <li class="nav-item"><a class="nav-link panier_show" href="javascript:void(0);"> <i class="fas fa-dolly-flatbed mr-1"></i><sup><small class="text-gray">(<?php echo($nombreProduitsPanier) ?>)</small></sup></a></li>
+            <li class="nav-item"><a class="nav-link" href="<?php echo(base_url()) ?>user/panier"> <i class="fas fa-dolly-flatbed mr-1"></i><sup><small class="text-gray">(<?php echo($nombreProduitsPanier) ?>)</small></sup></a></li>
             <!-- fin paier -->
 
             <!-- favory -->
