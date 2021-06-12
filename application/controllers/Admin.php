@@ -360,6 +360,7 @@ class admin extends CI_Controller
 	       $customer_id = "paiement facture n° ".$code;
 	       $idpersonne = $this->crud_model->fetch_clicent_Panier_tag($code);
 	       // operation d'envois des notification 
+	        // $this->load->library('pdf');
 
 	       $dataUpdate = array(
 	        'etat_paiement' =>  1
@@ -593,6 +594,8 @@ class admin extends CI_Controller
 		  echo json_encode($output);
 		}
 
+
+		
 
 		function fetch_search_view_product()
 		{
