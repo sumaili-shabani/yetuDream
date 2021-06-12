@@ -63,8 +63,8 @@ if ($contact_info_site->num_rows() > 0) {
 <link rel="stylesheet" href="<?= base_url('js/dev/vendor/owl.carousel2/assets/owl.carousel.min.css')?>">
 <link rel="stylesheet" href="<?= base_url('js/dev/vendor/owl.carousel2/assets/owl.theme.default.css')?>">
 <!-- Google fonts-->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap"> -->
 <!-- theme stylesheet-->
 <link rel="stylesheet" href="<?= base_url('js/dev/css/style.default.css')?>" id="theme-stylesheet">
 <!-- Custom stylesheet - for your changes-->

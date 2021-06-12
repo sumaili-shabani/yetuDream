@@ -90,6 +90,24 @@ class crud_model extends CI_Model{
       $this->db->limit(1);
       return $this->db->get_where('users', array('email' => $email));
   }
+
+  // last id si existe
+  function get_last_id_from_users()
+  {
+      $last ='';
+      $query =$this->db->query("SELECT MAX(id)+1 AS last FROM users");
+      if ($query->num_rows() > 0) {
+        foreach ($query->result_array() as $key) {
+          $last = $key['last'];
+        }
+      }
+      else{
+        $last = 1;
+      }
+
+      return $last;
+  }
+
   // utilisateur connecte
   function fetch_connected($id){
       $this->db->where('id',$id);
@@ -112,6 +130,8 @@ class crud_model extends CI_Model{
       }
       return $nombreTotal;
   }
+
+
 
   // online 
   function insert_online($data){
@@ -195,6 +215,15 @@ class crud_model extends CI_Model{
       return $this->db->get_where('profile_padding_vente', array(
         'user_id'     =>  $user_id,
         'etat_vente'  => 0
+      ))->result_array();
+  }
+
+  // utilisateur vente validation
+  function fetch_connected_vente_validation($user_id){
+      $this->db->group_by('code');
+      return $this->db->get_where('profile_padding_vente', array(
+        'user_id'     =>  $user_id,
+        'etat_vente'  => 1
       ))->result_array();
   }
 
@@ -3162,6 +3191,53 @@ class crud_model extends CI_Model{
       'etat_paiement' =>  1
     ));
 
+  }
+
+
+  // nombre des produits au panier 
+  function fetch_product_price_Panier_tag($idc){
+      $product_price;
+      $query= $this->db->query("SELECT * FROM cart WHERE idc='".$idc."'");
+      if ($query->num_rows() > 0) {
+        foreach ($query->result_array() as $key) {
+          # code...
+          $product_price = $key['product_price'];
+        }
+
+      }
+      else{
+        $product_price = 0;
+      }
+      return $product_price;
+  }
+
+  // nombre des produits au panier 
+  function fetch_product_price_Panier_tag_home($idc){
+      $product_price;
+      $query= $this->db->query("SELECT * FROM cart2 WHERE idc='".$idc."'");
+      if ($query->num_rows() > 0) {
+        foreach ($query->result_array() as $key) {
+          # code...
+          $product_price = $key['product_price'];
+        }
+
+      }
+      else{
+        $product_price = 0;
+      }
+      return $product_price;
+  }
+
+  function update_my_card($idc, $data)  
+  {  
+       $this->db->where("idc", $idc);  
+       $this->db->update("cart", $data);  
+  }
+
+  function update_my_card_home($idc, $data)  
+  {  
+       $this->db->where("idc", $idc);  
+       $this->db->update("cart2", $data);  
   }
 
 

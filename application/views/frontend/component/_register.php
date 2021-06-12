@@ -18,7 +18,7 @@
                                     		Créer un nouveau compte au système Ets YETU.
                                     	</span>
                                     </div>
-                                    <form class="user" method="post" id="user_form" enctype="multipart/form-data" action="<?= base_url(); ?>login/register_validation">
+                                    <form class="user" method="post"  enctype="multipart/form-data" action="<?= base_url(); ?>login/register_validation">
                                     	<div class="form-group">
                                     		<?php
 												if($this->session->flashdata('message'))

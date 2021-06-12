@@ -90,7 +90,7 @@
 							            }
 							            else if(!$this->session->userdata('id'))
 									    {
-									    	$message ="Connectez-vous à votre compte afin d'effectuer cette opération!";
+									    	$message ="Connectez-vous à votre compte afin d'effectuer cette opération!<br><a href='".base_url()."login'' class='text-primary'> <i class='fa fa-hand-o-right mr-1'></i>cliquer ici pour se connecter!</a>";
 									      	 echo '
 							                <div class="alert alert-danger">
 							                <button class="close" data-dismiss="alert">x</button>
@@ -105,6 +105,10 @@
 							    	</div>
 							    </div>
 							    <!-- fin message -->
+
+
+
+
 
 			                  <div class="col-lg-6 form-group">
 			                    <label class="text-small text-uppercase" for="firstName">Nom</label>

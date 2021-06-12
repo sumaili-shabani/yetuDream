@@ -152,13 +152,14 @@ class login extends CI_Controller
 	}
 
 	function register_validation()
-  	 {
+  	{
 
         $avatar = "icone-user.png";
   		  $this->form_validation->set_rules('first_name', 'first name', 'required|trim');
   		  $this->form_validation->set_rules('mail_ok', 'email', 'required|trim|valid_email|is_unique[users.email]');
   		  $this->form_validation->set_rules('user_password', 'password', 'required');
   		  $users_exits = $this->crud_model->get_users_email($this->input->post('mail_ok'));
+  		  $last_id = $this->crud_model->get_last_id_from_users();
   		  if ($users_exits->num_rows() > 0) {
 
   		  	  $this->session->set_flashdata('message2', 'Erreur!!! Cette adresse mail existe déjà veillez vérifier les informations requises🔕');
@@ -171,17 +172,24 @@ class login extends CI_Controller
 	  			   $verification_key = md5(rand());
 	               $encrypted_password = md5($this->input->post("user_password"));
 	  			   $data = array(
+	  			   	'id'					=> $last_id,
 	  			    'first_name'  			=> $this->input->post('first_name'),
 	  			    'email'  			    => $this->input->post('mail_ok'),
 	  			    'passwords' 			=> $encrypted_password,
 	  			    'idrole' 			    => 2,
 	  			    'image'           		=> $avatar
 	  			   );
+
+	  			   // echo("last id: ".$last_id);
 	  		   	   $id = $this->crud_model->insert_user($data);
 	  			   if($id > 0)
 	  			   {
 
-	  			    $this->session->set_flashdata('message', 'votre compte a été créé avec succès, vous pouvez déjà vous connecter '.$this->input->post('first_name'));
+		  			   	if ($last_id !='') {
+		  			   		$this->insert_new_card($last_id);
+		  			   	}
+
+	  			    	$this->session->set_flashdata('message', 'votre compte a été créé avec succès, vous pouvez déjà vous connecter '.$this->input->post('first_name'));
 
 	  			        $users_cool = $this->crud_model->get_info_user();
 			            foreach ($users_cool as $key) {
@@ -232,6 +240,36 @@ class login extends CI_Controller
 
 
 
+  	function insert_new_card($user_id='')
+	{
+
+	  $produit 		= $this->crud_model->detail_cart_home();
+	  if ($produit->num_rows() > 0) {
+
+	  	  
+	  	  foreach($produit->result_array() as $items)
+		  {
+			    $data2 = array(
+				   "product_id"  			=> $items["product_id"],
+				   "product_name"  			=> $items["product_name"],
+				   "quantity"  				=> $items["quantity"],
+				   "product_price"  		=> $items["product_price"],
+				   "product_priceTotal"  	=> $items["product_priceTotal"],
+				   "product_image"  		=> $items["product_image"],
+				   "user_id"				=> $user_id
+				);
+				$this->crud_model->insert_to_cart($data2); //return rowid 
+
+		  }
+		 
+	  }
+	  else{
+
+	  	
+	  }
+	  
+	}
+	 
 	function logout()
 	{
 	  

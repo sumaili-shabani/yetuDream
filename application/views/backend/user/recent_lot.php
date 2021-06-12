@@ -429,6 +429,52 @@
 		 		/* Act on the event */
 		 		 load_country_data(1);
 		 	});
+
+
+		 	$(document).on('keyup', '.qte_modifiy', function(event) {
+		 		event.preventDefault();
+		 		/* Act on the event */
+		 		if (event.which == 13) {
+		 			var url = "<?php echo(base_url()) ?>user/edit_my_panier";
+		 			var quantity = $(this).val();
+			 		var idc = $(this)[0].id;
+
+			 		if (quantity !='') {
+			 			if (quantity >=1) {
+
+			 				$.ajax({
+					 			url:url,
+					 			method:"POST",
+					 			data:{
+					 				quantity: quantity,
+					 				idc: idc
+					 			},
+					 			beforeSend:function()
+					            {
+					                $('#country_table').html('<div class="col-md-12 post_data"><p><span class="content-placeholder" style="width:100%; height: 30px;">&nbsp;</span></p><p><span class="content-placeholder" style="width:100%; height: 100px;">&nbsp;</span></p></div>');
+					            }, 
+			                    success:function(data)  
+			                    {  
+			                         show_card();
+			                         // swal("ok",data,"success");
+			                    }  
+
+					 		});
+
+					 		console.log("idc:"+idc+" quantité:"+quantity);
+
+			 			}
+			 			else{
+
+			 				swal("erreur!!!!","la quantité doit être supérieure au égale à 1", "error");
+			 			}
+			 		}
+			 		else{
+			 			swal("erreur!!!!","Veillez entrer la quantité", "error");
+			 		}
+			 		
+		 		}
+		 	});
 			
 
 

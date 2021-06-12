@@ -227,7 +227,11 @@
 		          <a class="dropdown-item" href="<?php echo(base_url()) ?>user/profile"><i class="fa fa-user"></i> Mon profile</a>
 		          <a class="dropdown-item" href="<?php echo(base_url()) ?>user/basic"><i class="fa  fa-cogs"></i> Paramètre</a>
 		          <a class="dropdown-item" href="<?php echo(base_url()) ?>user/achat"><i class="fa fa-shopping-cart"></i> Mes achats</a>
+
 		          <div class="dropdown-divider"></div>
+		          	<a class="dropdown-item" href="<?php echo(base_url()) ?>user/hystorique"><i class="fa fa-tag"></i> Hystorique</a>
+		          <div class="dropdown-divider"></div>
+		          
 		          <a class="dropdown-item" href="<?php echo(base_url()) ?>login/logout" onclick="return confirm('Etes-vous sûre de vouloir se déconnecter?')"><i class="fa fa-globe"></i> Déconnexion</a>
 		        </div>
 		    </li>

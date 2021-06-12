@@ -211,7 +211,7 @@ class user extends CI_Controller
     }
 
     function achat(){
-          $data['title']="Information basique de mon compte";
+          $data['title']="Mes achats";
           $data['users'] = $this->crud_model->fetch_connected($this->connected); 
           $data['mes_ventes'] = $this->crud_model->fetch_connected_vente($this->connected); 
 
@@ -222,6 +222,20 @@ class user extends CI_Controller
 		  $data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
 
         $this->load->view('backend/user/achat', $data);
+    }
+
+    function hystorique(){
+          $data['title']="Hystorique sur mes achats";
+          $data['users'] = $this->crud_model->fetch_connected($this->connected); 
+          $data['mes_ventes'] = $this->crud_model->fetch_connected_vente_validation($this->connected); 
+
+		  $data['net_payer'] = $this->crud_model->calcul_net_apayer($this->connected);
+		  $data['contact_info_site']  = $this->crud_model->Select_contact_info_site();
+		  $data['nombreProduitsPanier'] = $this->crud_model->fetch_number_Panier_connected($this->connected); 
+		  $data['nomProduit'] = $this->crud_model->filtre_de_nom_Category_produit();
+		  $data['nomCat'] = $this->crud_model->filtre_de_cat_Category_produit();
+
+        $this->load->view('backend/user/hystorique', $data);
     }
 
 
@@ -355,6 +369,12 @@ class user extends CI_Controller
 		  	$this->session->set_flashdata('message', 'suppression avec succès ');
 		    $query = $this->crud_model->delete_favory_vente($param2);
 		    redirect('user/achat');
+		  }
+
+		  if($param1=='display_delete_vente2') {
+		  	$this->session->set_flashdata('message', 'suppression avec succès ');
+		    $query = $this->crud_model->delete_favory_vente($param2);
+		    redirect('user/hystorique');
 		  }
 
 
@@ -871,8 +891,8 @@ class user extends CI_Controller
 			    <td class="align-middle border-0">'.$items["product_name"].'</td>
 			    <td class="align-middle border-0"> 
 
-			    <!--<input type="number" min="1" name="" value="'.$items["quantity"].'" class="form-control" placeholder="La quantité"> -->
-			     '.$items["quantity"].'
+			    <input type="number" id="'.$items["idc"].'" min="1" name="qte_modifiy" value="'.$items["quantity"].'" class="form-control qte_modifiy" placeholder="La quantité"> 
+			     <!--'.$items["quantity"].'-->
 			     </td>
 			    <td class="align-middle border-0">'.$items["product_price"].'$</td>
 			    <td class="align-middle border-0">'.$items["product_priceTotal"].'$</td>
@@ -1515,6 +1535,33 @@ class user extends CI_Controller
        // $this->pdf->loadHtml($html_content);
        // $this->pdf->render();
        // $this->pdf->stream("paiement reçu_".$customer_id.".pdf", array("Attachment"=>0));
+	}
+
+	function edit_my_panier(){
+		$idc = $this->input->post('idc');
+		$quantity = $this->input->post('quantity');
+
+		// pour le prix normal 
+		$product_price = $this->crud_model->fetch_product_price_Panier_tag($idc);
+		$product_priceTotal = $quantity * $product_price;
+
+		$data = array(
+          'quantity'     			=> $quantity,
+          'product_priceTotal'     	=> $product_priceTotal
+
+        );
+
+        // echo("qte:".$quantity." prix total:".$product_priceTotal);
+       $query = $this->crud_model->update_my_card($idc, $data);
+       if (!$query) {
+       	# code...
+       	echo("modification avec succès!");
+
+       }
+       else{
+       	  echo("Une erreur est subvenue lors de l'opération!");
+       }
+       
 	}
 
 

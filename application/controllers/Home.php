@@ -390,6 +390,34 @@ class home extends CI_Controller {
 	  echo $this->view_cart();
 	}
 
+	function edit_my_panier(){
+		$idc = $this->input->post('idc');
+		$quantity = $this->input->post('quantity');
+
+		// pour le prix normal 
+		$product_price = $this->crud_model->fetch_product_price_Panier_tag_home($idc);
+		$product_priceTotal = $quantity * $product_price;
+
+		$data = array(
+          'quantity'     			=> $quantity,
+          'product_priceTotal'     	=> $product_priceTotal
+
+        );
+
+        // echo("qte:".$quantity." prix total:".$product_priceTotal);
+       $query = $this->crud_model->update_my_card_home($idc, $data);
+       if (!$query) {
+       	# code...
+       	echo("modification avec succès!");
+
+       }
+       else{
+       	  echo("Une erreur est subvenue lors de l'opération!");
+       }
+       
+	}
+
+
 	function view_cart()
 	{
 
@@ -443,8 +471,8 @@ class home extends CI_Controller {
 			    <td class="align-middle border-0">'.$items["product_name"].'</td>
 			    <td class="align-middle border-0"> 
 
-			    <!--<input type="number" min="1" name="" value="'.$items["quantity"].'" class="form-control" placeholder="La quantité"> -->
-			     '.$items["quantity"].'
+			    <input type="number" id="'.$items["idc"].'" min="1" name="qte_modifiy" value="'.$items["quantity"].'" class="form-control qte_modifiy" placeholder="La quantité"> 
+			     <!--'.$items["quantity"].'-->
 			     </td>
 			    <td class="align-middle border-0">'.$items["product_price"].'$</td>
 			    <td class="align-middle border-0">'.$items["product_priceTotal"].'$</td>
