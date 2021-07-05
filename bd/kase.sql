@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 22 mai 2021 à 12:49
+-- Généré le : mar. 15 juin 2021 à 11:10
 -- Version du serveur :  10.4.19-MariaDB
 -- Version de PHP : 7.4.19
 
@@ -44,13 +44,15 @@ CREATE TABLE `cart` (
 
 INSERT INTO `cart` (`idc`, `product_id`, `product_name`, `quantity`, `product_priceTotal`, `product_image`, `user_id`, `product_price`) VALUES
 (88, 51, 'bic coco', 1, 2, '1678487290.png', 11, 2),
-(89, 39, 'Rame 4GO', 1, 8, '1178653809.jfif', 11, 8),
+(89, 39, 'Rame 4GO', 4, 32, '1178653809.jfif', 11, 8),
 (98, 15, 'Iphone 6', 1, 120, '2058948256.jfif', 14, 120),
 (99, 56, 'Radio casette', 1, 50, '606640221.jfif', 14, 50),
-(102, 11, 'robe v2', 1, 40, '156543730.jfif', 12, 40),
-(103, 49, 'stylo meilleur', 2, 6, '1200937382.png', 12, 3),
-(104, 15, 'Iphone 6', 1, 120, '2058948256.jfif', 12, 120),
-(105, 60, 'Bousta', 1, 20, '1679966288.jfif', 12, 20);
+(113, 15, 'Iphone 6', 1, 120, '2058948256.jfif', 15, 120),
+(114, 15, 'Iphone 6', 1, 120, '2058948256.jfif', 15, 120),
+(115, 21, 'Samsing galaxy', 2, 260, '1646935833.jpg', 15, 130),
+(116, 1, 'veste home', 1, 60, '1353395525.jpg', 12, 60),
+(117, 53, 'stylo obama', 2, 2, '201181483.jfif', 12, 1),
+(118, 56, 'Radio casette', 1, 50, '606640221.jfif', 11, 50);
 
 -- --------------------------------------------------------
 
@@ -73,13 +75,8 @@ CREATE TABLE `cart2` (
 --
 
 INSERT INTO `cart2` (`idc`, `product_id`, `product_name`, `quantity`, `product_priceTotal`, `product_image`, `product_price`) VALUES
-(15, 54, 'stylo de luxe', 1, 1, '970405610.jfif', 1),
-(16, 55, 'my radio v1', 1, 10, '259426821.jfif', 10),
-(17, 55, 'my radio v1', 1, 10, '259426821.jfif', 10),
-(18, 1, 'veste home', 1, 60, '1353395525.jpg', 60),
-(19, 21, 'Samsing galaxy', 1, 130, '1646935833.jpg', 130),
-(20, 47, 'githard v2', 1, 123, '1122758006.png', 123),
-(21, 52, 'stylo bic', 1, 1, '1868878333.png', 1);
+(39, 60, 'Bousta', 2, 40, '1679966288.jfif', 20),
+(40, 51, 'bic coco', 10, 20, '1678487290.png', 2);
 
 -- --------------------------------------------------------
 
@@ -103,7 +100,7 @@ INSERT INTO `category` (`idcat`, `nom`, `created_at`) VALUES
 (3, 'téléphone mobile', '2021-04-12 16:03:23'),
 (4, 'vêtement', '2021-04-12 16:03:33'),
 (5, 'Appareil électromagnétique', '2021-04-12 15:44:45'),
-(8, 'Soulier', '2021-04-14 20:31:10');
+(8, 'Souliers', '2021-04-14 20:31:10');
 
 -- --------------------------------------------------------
 
@@ -132,7 +129,8 @@ INSERT INTO `contact` (`id`, `nom`, `email`, `sujet`, `message`, `fichier`, `cre
 (9, 'king lebon', 'king@gmail.com', 'on est en pleine guerre de mode', 'coucou', '1928290491.png', '2021-05-15 20:19:39'),
 (10, 'sifa abeli', 'mikah@gmail.com', 'j\'aimerai savoir les informations sur...', 'coucou', NULL, '2021-05-15 20:20:04'),
 (11, 'lula seguobe', 'lula@gmail.com', 'my life it never goes swolly', 'Je voudrai avoir un style de fashion', '1459638729.jpg', '2021-05-22 11:45:12'),
-(12, 'sumaili shabani', 'info.devtech@gmail.com', 'information personnele sur le podcast', 'cool', NULL, '2021-05-22 11:46:03');
+(12, 'sumaili shabani', 'info.devtech@gmail.com', 'information personnele sur le podcast', 'cool', NULL, '2021-05-22 11:46:03'),
+(13, 'pacifique molo', 'molo@gmail.com', 'demande d\'information', 'bonjour', '1685355886.jpg', '2021-06-12 10:45:19');
 
 -- --------------------------------------------------------
 
@@ -157,7 +155,8 @@ INSERT INTO `entree` (`ide`, `product_id`, `QteEntree`, `created_at`) VALUES
 (4, 62, 80, '2021-04-21 21:16:45'),
 (5, 61, 5, '2021-04-27 14:09:55'),
 (6, 48, 10, '2021-04-27 14:10:11'),
-(7, 51, 2, '2021-04-29 18:40:12');
+(7, 51, 2, '2021-04-29 18:40:12'),
+(8, 48, 5, '2021-05-24 15:33:49');
 
 -- --------------------------------------------------------
 
@@ -213,7 +212,9 @@ INSERT INTO `favories2` (`idfovorie`, `product_id`, `created_at`) VALUES
 (11, 61, '2021-05-22 11:25:08'),
 (12, 60, '2021-05-22 11:32:08'),
 (13, 55, '2021-05-22 11:33:18'),
-(14, 43, '2021-05-22 11:43:11');
+(14, 43, '2021-05-22 11:43:11'),
+(15, 54, '2021-05-24 15:03:24'),
+(16, 42, '2021-06-12 10:40:01');
 
 -- --------------------------------------------------------
 
@@ -291,52 +292,56 @@ INSERT INTO `notification` (`id`, `message`, `url`, `id_user`, `created_at`, `ic
 (1, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/385427116-233545gtr2w', 7, '2021-05-19 12:18:29', 'fa fa-money', 'Tentative de paiement'),
 (2, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/385427116-233545gtr2w', 8, '2021-05-19 12:18:29', 'fa fa-money', 'Tentative de paiement'),
 (3, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/385427116-233545gtr2w', 9, '2021-05-19 12:18:29', 'fa fa-money', 'Tentative de paiement'),
-(4, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1875025167-12345678', 7, '2021-05-19 12:19:03', 'fa fa-money', 'Tentative de paiement'),
 (5, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1875025167-12345678', 8, '2021-05-19 12:19:03', 'fa fa-money', 'Tentative de paiement'),
 (6, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1875025167-12345678', 9, '2021-05-19 12:19:03', 'fa fa-money', 'Tentative de paiement'),
-(8, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/679748893-234df', 7, '2021-05-20 15:20:20', 'fa fa-money', 'Tentative de paiement'),
 (9, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/679748893-234df', 8, '2021-05-20 15:20:20', 'fa fa-money', 'Tentative de paiement'),
 (10, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/679748893-234df', 9, '2021-05-20 15:20:20', 'fa fa-money', 'Tentative de paiement'),
-(11, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/805226059-Gty234', 7, '2021-05-20 15:21:43', 'fa fa-money', 'Tentative de paiement'),
 (12, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/805226059-Gty234', 8, '2021-05-20 15:21:43', 'fa fa-money', 'Tentative de paiement'),
 (13, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/805226059-Gty234', 9, '2021-05-20 15:21:43', 'fa fa-money', 'Tentative de paiement'),
-(14, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/769849969-Gty234', 7, '2021-05-20 15:24:38', 'fa fa-money', 'Tentative de paiement'),
 (15, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/769849969-Gty234', 8, '2021-05-20 15:24:38', 'fa fa-money', 'Tentative de paiement'),
 (16, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/769849969-Gty234', 9, '2021-05-20 15:24:38', 'fa fa-money', 'Tentative de paiement'),
-(17, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1922795748-541et4', 7, '2021-05-20 15:25:59', 'fa fa-money', 'Tentative de paiement'),
 (18, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1922795748-541et4', 8, '2021-05-20 15:26:00', 'fa fa-money', 'Tentative de paiement'),
 (19, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1922795748-541et4', 9, '2021-05-20 15:26:00', 'fa fa-money', 'Tentative de paiement'),
-(20, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1036290997-234df', 7, '2021-05-20 15:27:03', 'fa fa-money', 'Tentative de paiement'),
 (21, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1036290997-234df', 8, '2021-05-20 15:27:04', 'fa fa-money', 'Tentative de paiement'),
 (22, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1036290997-234df', 9, '2021-05-20 15:27:04', 'fa fa-money', 'Tentative de paiement'),
 (23, 'Bonjour yuma kayanda votre paiement a été validé avec succès ????', 'user/facturePaiement/1922795748-541et4', 11, '2021-05-20 15:29:51', 'fa fa-check', 'Félicitation! votre paiement a été approuvé'),
-(25, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1291076274-34der2', 7, '2021-05-20 15:32:43', 'fa fa-money', 'Tentative de paiement'),
 (26, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1291076274-34der2', 8, '2021-05-20 15:32:43', 'fa fa-money', 'Tentative de paiement'),
 (27, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1291076274-34der2', 9, '2021-05-20 15:32:43', 'fa fa-money', 'Tentative de paiement'),
-(28, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1845569789-12345678', 7, '2021-05-20 15:34:27', 'fa fa-money', 'Tentative de paiement'),
 (29, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1845569789-12345678', 8, '2021-05-20 15:34:27', 'fa fa-money', 'Tentative de paiement'),
 (30, 'Nouvelle tentative de paiement yuma kayanda vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1845569789-12345678', 9, '2021-05-20 15:34:27', 'fa fa-money', 'Tentative de paiement'),
-(31, 'kakese pandamiti Vient de rejoindre la plateforme ', 'admin/users', 7, '2021-05-20 15:36:56', 'fa fa-user', 'Nouvelle inscription'),
 (32, 'kakese pandamiti Vient de rejoindre la plateforme ', 'admin/users', 8, '2021-05-20 15:36:56', 'fa fa-user', 'Nouvelle inscription'),
-(33, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'admin/paiement_pading/450104471-RE18HB1', 7, '2021-05-20 15:40:36', 'fa fa-money', 'Tentative de paiement'),
 (34, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'admin/paiement_pading/450104471-RE18HB1', 8, '2021-05-20 15:40:36', 'fa fa-money', 'Tentative de paiement'),
 (35, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/450104471-RE18HB1', 9, '2021-05-20 15:40:36', 'fa fa-money', 'Tentative de paiement'),
-(36, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'admin/paiement_pading/871793921-Gty234', 7, '2021-05-20 15:42:11', 'fa fa-money', 'Tentative de paiement'),
 (37, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'admin/paiement_pading/871793921-Gty234', 8, '2021-05-20 15:42:11', 'fa fa-money', 'Tentative de paiement'),
 (38, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/871793921-Gty234', 9, '2021-05-20 15:42:11', 'fa fa-money', 'Tentative de paiement'),
 (39, 'Bonjour kakese pandamiti votre paiement a été validé avec succès ????', 'user/facturePaiement/450104471-RE18HB1', 14, '2021-05-20 15:59:27', 'fa fa-check', 'Félicitation d\'avance!!!'),
-(40, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1058693437-rtv4qw', 7, '2021-05-20 16:11:06', 'fa fa-money', 'Tentative de paiement'),
 (41, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1058693437-rtv4qw', 8, '2021-05-20 16:11:06', 'fa fa-money', 'Tentative de paiement'),
 (42, 'Nouvelle tentative de paiement kakese pandamiti vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1058693437-rtv4qw', 9, '2021-05-20 16:11:06', 'fa fa-money', 'Tentative de paiement'),
-(43, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/', 12, '2021-05-20 17:42:44', 'fa fa-check', 'Félicitation d\'avance!!!'),
 (45, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/1875025167-12345678', 12, '2021-05-20 17:43:11', 'fa fa-check', 'Félicitation d\'avance!!!'),
 (46, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/1875025167-12345678', 12, '2021-05-20 17:43:41', 'fa fa-check', 'Félicitation d\'avance!!!'),
 (51, 'Bonjour kakese pandamiti votre paiement a été validé avec succès ????', 'user/facturePaiement/450104471-RE18HB1', 14, '2021-05-21 08:16:58', 'fa fa-check', 'Félicitation d\'avance!!!'),
-(52, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/158192831-fgr43', 7, '2021-05-21 08:29:08', 'fa fa-money', 'Tentative de paiement'),
 (53, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/158192831-fgr43', 8, '2021-05-21 08:29:08', 'fa fa-money', 'Tentative de paiement'),
 (54, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/158192831-fgr43', 9, '2021-05-21 08:29:08', 'fa fa-money', 'Tentative de paiement'),
 (57, 'Bonjour yuma kayanda votre paiement a été validé avec succès ????', 'user/facturePaiement/1922795748-541et4', 11, '2021-05-21 08:41:56', 'fa fa-check', 'Félicitation d\'avance!!!'),
-(58, 'Bonjour yuma kayanda votre paiement a été validé avec succès ????', 'user/facturePaiement/1036290997-234df', 11, '2021-05-21 08:42:41', 'fa fa-check', 'Félicitation d\'avance!!!');
+(58, 'Bonjour yuma kayanda votre paiement a été validé avec succès ????', 'user/facturePaiement/1036290997-234df', 11, '2021-05-21 08:42:41', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(59, 'Bonjour yuma kayanda votre paiement a été validé avec succès ????', 'user/facturePaiement/1291076274-34der2', 11, '2021-05-22 12:58:58', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(60, 'Bonjour yuma kayanda votre paiement a été validé avec succès ????', 'user/facturePaiement/1291076274-34der2', 11, '2021-05-22 13:00:20', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(61, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/565885790-Gty234', 7, '2021-05-24 15:19:06', 'fa fa-money', 'Tentative de paiement'),
+(62, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/565885790-Gty234', 8, '2021-05-24 15:19:06', 'fa fa-money', 'Tentative de paiement'),
+(63, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/565885790-Gty234', 9, '2021-05-24 15:19:06', 'fa fa-money', 'Tentative de paiement'),
+(64, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/565885790-Gty234', 12, '2021-05-24 15:42:45', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(65, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1205131417-5666rt6', 7, '2021-06-12 10:49:18', 'fa fa-money', 'Tentative de paiement'),
+(66, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1205131417-5666rt6', 8, '2021-06-12 10:49:18', 'fa fa-money', 'Tentative de paiement'),
+(67, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1205131417-5666rt6', 9, '2021-06-12 10:49:18', 'fa fa-money', 'Tentative de paiement'),
+(68, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/1205131417-5666rt6', 12, '2021-06-12 10:52:30', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(69, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/1205131417-5666rt6', 12, '2021-06-12 10:53:24', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(70, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/1205131417-5666rt6', 12, '2021-06-12 10:55:45', 'fa fa-check', 'Félicitation d\'avance!!!'),
+(72, 'patrice lufimbo Vient de rejoindre la plateforme ', 'admin/users', 7, '2021-06-12 12:32:00', 'fa fa-user', 'Nouvelle inscription'),
+(73, 'patrice lufimbo Vient de rejoindre la plateforme ', 'admin/users', 8, '2021-06-12 12:32:00', 'fa fa-user', 'Nouvelle inscription'),
+(74, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1066446620-56web1001', 7, '2021-06-12 13:02:31', 'fa fa-money', 'Tentative de paiement'),
+(75, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'admin/paiement_pading/1066446620-56web1001', 8, '2021-06-12 13:02:31', 'fa fa-money', 'Tentative de paiement'),
+(76, 'Nouvelle tentative de paiement kasumba kipundula vient de tenter de confirmer  son paiement', 'entreprise/paiement_pading/1066446620-56web1001', 9, '2021-06-12 13:02:32', 'fa fa-money', 'Tentative de paiement'),
+(77, 'Bonjour kasumba kipundula votre paiement a été validé avec succès ????', 'user/facturePaiement/1066446620-56web1001', 12, '2021-06-12 13:05:13', 'fa fa-check', 'Félicitation d\'avance!!!');
 
 -- --------------------------------------------------------
 
@@ -349,13 +354,6 @@ CREATE TABLE `online` (
   `id_user` int(11) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Déchargement des données de la table `online`
---
-
-INSERT INTO `online` (`id`, `id_user`, `created_at`) VALUES
-(26, 7, '2021-05-22 12:47:11');
 
 -- --------------------------------------------------------
 
@@ -383,34 +381,23 @@ CREATE TABLE `pading_vente` (
 --
 
 INSERT INTO `pading_vente` (`idv`, `product_id`, `product_name`, `quantity`, `product_price`, `product_priceTotal`, `product_image`, `user_id`, `code`, `created_at`, `etat_vente`, `token`) VALUES
-(1, 45, 'appareil camon pro', 1, 180, 180, '246589297.png', 12, '385427116-233545gtr2w', '2021-05-19 12:18:28', 0, '233545gtr2w'),
-(2, 44, 'appareil camon x-pro', 1, 250, 250, '314169640.png', 12, '385427116-233545gtr2w', '2021-05-19 12:18:29', 0, '233545gtr2w'),
-(3, 17, 'Iphone', 1, 230, 230, '546785424.jfif', 12, '385427116-233545gtr2w', '2021-05-19 12:18:29', 0, '233545gtr2w'),
-(4, 14, 'Iphone v1', 1, 320, 320, '516404981.jfif', 12, '385427116-233545gtr2w', '2021-05-19 12:18:29', 0, '233545gtr2w'),
-(5, 19, 'houwei v2', 1, 140, 140, '464168104.jfif', 12, '385427116-233545gtr2w', '2021-05-19 12:18:29', 0, '233545gtr2w'),
 (6, 29, 'Ordinateur lenovo', 2, 230, 460, '618456468.jfif', 12, '1875025167-12345678', '2021-05-19 12:19:02', 1, '12345678'),
 (7, 50, 'bic v2', 1, 1, 1, '1231307858.png', 12, '1875025167-12345678', '2021-05-19 12:19:02', 1, '12345678'),
 (8, 52, 'stylo bic', 4, 1, 4, '1868878333.png', 12, '679748893-234df', '2021-05-20 15:20:19', 0, '234df'),
 (9, 31, 'batterie hp ', 1, 15, 15, '429482960.jpg', 12, '679748893-234df', '2021-05-20 15:20:20', 0, '234df'),
 (13, 56, 'Radio casette', 1, 50, 50, '606640221.jfif', 11, '769849969-Gty234', '2021-05-20 15:24:38', 0, 'Gty234'),
 (14, 27, 'Ordinateur Hp elitebook', 1, 200, 200, '771999033.jfif', 11, '769849969-Gty234', '2021-05-20 15:24:38', 0, 'Gty234'),
-(15, 22, 'techno camon c-x', 1, 80, 80, '1424125097.jpg', 11, '1922795748-541et4', '2021-05-20 15:25:59', 1, '541et4'),
-(16, 19, 'houwei v2', 1, 140, 140, '464168104.jfif', 11, '1922795748-541et4', '2021-05-20 15:25:59', 1, '541et4'),
 (17, 55, 'my radio v1', 1, 10, 10, '259426821.jfif', 11, '1036290997-234df', '2021-05-20 15:27:03', 1, '234df'),
 (18, 54, 'stylo de luxe', 23, 1, 23, '970405610.jfif', 11, '1036290997-234df', '2021-05-20 15:27:03', 1, '234df'),
-(19, 38, 'rame 2GO', 1, 5, 5, '1046108500.jfif', 11, '1291076274-34der2', '2021-05-20 15:32:42', 0, '34der2'),
-(20, 33, 'batterie makitosh', 1, 150, 150, '462337587.jpg', 11, '1291076274-34der2', '2021-05-20 15:32:43', 0, '34der2'),
-(21, 20, 'houwei', 1, 170, 170, '748438850.jfif', 11, '1845569789-12345678', '2021-05-20 15:34:26', 0, '12345678'),
-(22, 59, 'Radio simba', 1, 18, 18, '222704386.webp', 11, '1845569789-12345678', '2021-05-20 15:34:26', 0, '12345678'),
-(23, 23, 'Ordinateur desktop', 1, 120, 120, '1237559373.png', 11, '1845569789-12345678', '2021-05-20 15:34:26', 0, '12345678'),
+(19, 38, 'rame 2GO', 1, 5, 5, '1046108500.jfif', 11, '1291076274-34der2', '2021-05-20 15:32:42', 1, '34der2'),
+(20, 33, 'batterie makitosh', 1, 150, 150, '462337587.jpg', 11, '1291076274-34der2', '2021-05-20 15:32:43', 1, '34der2'),
 (24, 9, 'robe', 1, 30, 30, '1794647316.jfif', 14, '450104471-RE18HB1', '2021-05-20 15:40:36', 1, 'RE18HB1'),
 (25, 49, 'stylo meilleur', 12, 3, 36, '1200937382.png', 14, '450104471-RE18HB1', '2021-05-20 15:40:36', 1, 'RE18HB1'),
 (26, 15, 'Iphone 6', 1, 120, 120, '2058948256.jfif', 14, '871793921-Gty234', '2021-05-20 15:42:11', 0, 'Gty234'),
 (27, 43, 'appareil  professionel', 12, 200, 2400, '194996568.png', 14, '871793921-Gty234', '2021-05-20 15:42:11', 0, 'Gty234'),
-(28, 65, 'pianeau', 1, 1500, 1500, '267091551.png', 14, '1058693437-rtv4qw', '2021-05-20 16:11:06', 0, 'rtv4qw'),
-(29, 5, 'veste top v1', 1, 90, 90, '1104489618.jfif', 14, '1058693437-rtv4qw', '2021-05-20 16:11:06', 0, 'rtv4qw'),
-(30, 16, 'houwei v2', 1, 200, 200, '1130133432.jfif', 14, '1058693437-rtv4qw', '2021-05-20 16:11:06', 0, 'rtv4qw'),
-(31, 45, 'appareil camon pro', 1, 180, 180, '246589297.png', 14, '1058693437-rtv4qw', '2021-05-20 16:11:06', 0, 'rtv4qw');
+(39, 48, 'githard qbase', 1, 100, 100, '1518292916.png', 12, '1205131417-5666rt6', '2021-06-12 10:49:17', 1, '5666rt6'),
+(40, 56, 'Radio casette', 1, 50, 50, '606640221.jfif', 12, '1205131417-5666rt6', '2021-06-12 10:49:17', 1, '5666rt6'),
+(41, 13, 'Iphone v2', 1, 140, 140, '33367744.jfif', 12, '1066446620-56web1001', '2021-06-12 13:02:31', 1, '56web1001');
 
 -- --------------------------------------------------------
 
@@ -443,10 +430,14 @@ CREATE TABLE `paiement` (
 --
 
 INSERT INTO `paiement` (`idp`, `first_name`, `last_name`, `email`, `telephone`, `adresse1`, `adresse2`, `idpersonne`, `date_paie`, `montant`, `motif`, `token`, `etat_paiement`, `code`, `year`, `month`, `created_at`) VALUES
-(2, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere', 12, '2021-05-19', 461, 'airtel money', '12345678', 1, '1875025167-12345678', '2021', '5', '2021-05-20 15:16:26'),
-(3, 'yuma kayanda', 'françois', 'yuma@gmail.com', '+243823187085', 'katoyi goma', 'katoyi', 11, '2021-05-20', 220, 'airtel money', '541et4', 1, '1922795748-541et4', '2021', '5', '2021-05-20 15:29:51'),
-(5, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '0816532574', 'Bdgl goma', 'ERCW2', 14, '2021-05-20', 66, 'airtel money', 'RE18HB1', 1, '450104471-RE18HB1', '2021', '5', '2021-05-20 15:59:27'),
-(7, 'yuma kayanda', 'françois', 'yuma@gmail.com', '+243823187085', 'katoyi goma', 'katoyi', 11, '2021-05-20', 33, 'airtel money', '234df', 0, '1036290997-234df', '2021', '5', '2021-05-21 08:42:41');
+(2, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere', 12, '2021-05-19', 461, 'airtel money', '12345678', 1, '1875025167-12345678', '2021', 'May', '2021-05-20 15:16:26'),
+(3, 'yuma kayanda', 'françois', 'yuma@gmail.com', '+243823187085', 'katoyi goma', 'katoyi', 11, '2021-05-20', 220, 'airtel money', '541et4', 1, '1922795748-541et4', '2021', 'May', '2021-05-20 15:29:51'),
+(5, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '0816532574', 'Bdgl goma', 'ERCW2', 14, '2021-05-20', 66, 'airtel money', 'RE18HB1', 1, '450104471-RE18HB1', '2021', 'May', '2021-05-20 15:59:27'),
+(7, 'yuma kayanda', 'françois', 'yuma@gmail.com', '+243823187085', 'katoyi goma', 'katoyi', 11, '2021-05-20', 33, 'airtel money', '234df', 0, '1036290997-234df', '2021', 'May', '2021-05-21 08:42:41'),
+(8, 'yuma kayanda', 'françois', 'yuma@gmail.com', '+243823187085', 'katoyi goma', 'katoyi', 11, '2021-05-20', 155, 'm-pesa', '34der2', 1, '1291076274-34der2', '2021', 'May', '2021-05-22 12:58:58'),
+(9, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere', 12, '2021-05-24', 64, 'airtel money', 'Gty234', 0, '565885790-Gty234', '2021', 'May', '2021-05-24 15:42:45'),
+(10, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere papirus', 12, '2021-06-12', 150, 'airtel money', '5666rt6', 1, '1205131417-5666rt6', '2021', 'June', '2021-06-12 10:52:30'),
+(11, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'Quartier birere papiris', 12, '2021-06-12', 140, 'm-pesa', '56web1001', 0, '1066446620-56web1001', '2021', 'June', '2021-06-12 13:05:13');
 
 -- --------------------------------------------------------
 
@@ -489,7 +480,10 @@ INSERT INTO `paiement_pading` (`idp`, `first_name`, `last_name`, `email`, `telep
 (11, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '0816532574', 'Bdgl goma', 'ERCW2', 14, '2021-05-20', 66, 'airtel money', 'RE18HB1', '2021-05-20 15:40:35', '450104471-RE18HB1'),
 (12, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '0816532574', 'Bdgl goma', 'bdgl', 14, '2021-05-20', 2520, 'airtel money', 'Gty234', '2021-05-20 15:42:11', '871793921-Gty234'),
 (13, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '0816532574', 'Bdgl goma', 'birere', 14, '2021-05-20', 1970, 'm-pesa', 'rtv4qw', '2021-05-20 16:11:05', '1058693437-rtv4qw'),
-(14, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere', 12, '2021-05-21', 561, 'm-pesa', 'fgr43', '2021-05-21 08:29:08', '158192831-fgr43');
+(14, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere', 12, '2021-05-21', 561, 'm-pesa', 'fgr43', '2021-05-21 08:29:08', '158192831-fgr43'),
+(15, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere', 12, '2021-05-24', 64, 'airtel money', 'Gty234', '2021-05-24 15:19:06', '565885790-Gty234'),
+(16, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'birere papirus', 12, '2021-06-12', 150, 'airtel money', '5666rt6', '2021-06-12 10:49:17', '1205131417-5666rt6'),
+(17, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '+243810409151', 'Quartier birere', 'Quartier birere papiris', 12, '2021-06-12', 140, 'm-pesa', '56web1001', '2021-06-12 13:02:31', '1066446620-56web1001');
 
 -- --------------------------------------------------------
 
@@ -559,7 +553,7 @@ INSERT INTO `product` (`product_id`, `category_id`, `product_name`, `product_pri
 (45, 1, 'appareil camon pro', 180, '246589297.png', 7, 120),
 (46, 5, 'githard', 50, '326101141.png', 7, 120),
 (47, 1, 'githard v2', 123, '1122758006.png', 7, 120),
-(48, 1, 'githard qbase', 100, '1518292916.png', 7, 130),
+(48, 1, 'githard qbase', 100, '1518292916.png', 7, 135),
 (49, 5, 'stylo meilleur', 3, '1200937382.png', 7, 120),
 (50, 5, 'bic v2', 1, '1231307858.png', 7, 120),
 (51, 5, 'bic coco', 2, '1678487290.png', 7, 122),
@@ -752,7 +746,9 @@ CREATE TABLE `recupere` (
 --
 
 INSERT INTO `recupere` (`id`, `email`, `verification_key`) VALUES
-(1, 'kasumba@gmail.com', '1bcf07c1158a471386a5c84f9bc01b98');
+(1, 'kasumba@gmail.com', '1bcf07c1158a471386a5c84f9bc01b98'),
+(2, 'kasumba@gmail.com', 'fb5cad6b5f2439d1c2b2a4510de9fceb'),
+(3, 'kasumba@gmail.com', '9892cccf80fbb34eebc257346730e489');
 
 -- --------------------------------------------------------
 
@@ -867,7 +863,8 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `image`, `telepho
 (11, 'yuma kayanda', 'françois', 'yuma@gmail.com', '774701247.JPG', '+243823187085', 'katoyi goma', '                  	Informaticien sans frontière!                  ', '1995-05-12', 'e10adc3949ba59abbe56e057f20f883e', 2, 'M', 'https://facebook.com/', 'https://linkedin.com/', 'https://twitter.com/', 1),
 (12, 'kasumba kipundula', 'bertin', 'kasumba@gmail.com', '1661384914.JPG', '+243810409151', 'Quartier birere', 'Apple est mon préféré!', '1999-04-13', 'e10adc3949ba59abbe56e057f20f883e', 2, 'M', 'https://facebook.com/', 'https://linkedin.com/', 'https://twitter.com/', 1),
 (13, 'madeleine stephanie', 'sefu', 'madeleine@gmail.com', 'icone-user.png', '+243810409151', 'quartier katoyi avenue konde', NULL, '2021-04-13', 'e10adc3949ba59abbe56e057f20f883e', 2, 'F', '', '', '', 1),
-(14, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '9686898.png', '0816532574', 'Bdgl goma', 'Kind-Empure', '2021-05-20', 'e10adc3949ba59abbe56e057f20f883e', 2, 'M', '', '', '', 1);
+(14, 'kakese pandamiti', 'Patrick', 'kakese@gmail.com', '9686898.png', '0816532574', 'Bdgl goma', 'Kind-Empure', '2021-05-20', 'e10adc3949ba59abbe56e057f20f883e', 2, 'M', '', '', '', 1),
+(15, 'patrice lufimbo', 'ali', 'patrice@gmail.com', 'icone-user.png', '+243817883541', 'tmk goma avenue mushanganya n°59', 'commerçant détaillant!', '2021-06-12', 'e10adc3949ba59abbe56e057f20f883e', 2, 'M', 'https://facebook.com/', 'https://linkedin.com/', 'https://twitter.com/', 1);
 
 -- --------------------------------------------------------
 
@@ -1093,31 +1090,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `idc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `idc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
 
 --
 -- AUTO_INCREMENT pour la table `cart2`
 --
 ALTER TABLE `cart2`
-  MODIFY `idc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `idc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT pour la table `category`
 --
 ALTER TABLE `category`
-  MODIFY `idcat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `idcat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT pour la table `contact`
 --
 ALTER TABLE `contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `entree`
 --
 ALTER TABLE `entree`
-  MODIFY `ide` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ide` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `favories`
@@ -1129,55 +1126,55 @@ ALTER TABLE `favories`
 -- AUTO_INCREMENT pour la table `favories2`
 --
 ALTER TABLE `favories2`
-  MODIFY `idfovorie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idfovorie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `galery`
 --
 ALTER TABLE `galery`
-  MODIFY `idgalery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idgalery` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT pour la table `online`
 --
 ALTER TABLE `online`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT pour la table `pading_vente`
 --
 ALTER TABLE `pading_vente`
-  MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT pour la table `paiement`
 --
 ALTER TABLE `paiement`
-  MODIFY `idp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `paiement_pading`
 --
 ALTER TABLE `paiement_pading`
-  MODIFY `idp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT pour la table `product`
 --
 ALTER TABLE `product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT pour la table `recupere`
 --
 ALTER TABLE `recupere`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `role`
@@ -1201,7 +1198,7 @@ ALTER TABLE `tbl_info`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées
